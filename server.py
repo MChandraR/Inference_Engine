@@ -14,6 +14,9 @@ import mqtt_test
 
 import socketio
 import asyncio
+import pathlib
+temp = pathlib.PosixPath
+pathlib.PosixPath = pathlib.WindowsPath
 
 sio = socketio.AsyncClient()
 
@@ -72,14 +75,17 @@ def stream_video(url, window_name):
                 
     cv2.destroyAllWindows()
 
+weights="./exp5/weights/best.pt"  # model path or triton URL
+data="./datasets/data.yaml" # dataset.yaml path
+
 device = select_device("")
-model = DetectMultiBackend(ROOT / "yolov5s.pt", device=device, dnn=False, data=ROOT / "data/coco128.yaml", fp16=False)
+model = DetectMultiBackend(weights=weights, device=device, dnn=False, data=data, fp16=False)
     
 @smart_inference_mode()
 async def run(
-    weights=ROOT / "yolov5s.pt",  # model path or triton URL
+    weights=ROOT / "exp5/weights/best.pt",  # model path or triton URL
     source="http://192.168.2.148:8081/?action=stream",  # file/dir/URL/glob/screen/0(webcam)
-    data=ROOT / "data/coco128.yaml",  # dataset.yaml path
+    data=ROOT / "datasets/data.yaml",  # dataset.yaml path
     imgsz=(640, 640),  # inference size (height, width)
     conf_thres=0.25,  # confidence threshold
     iou_thres=0.45,  # NMS IOU threshold
