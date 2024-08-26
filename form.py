@@ -64,7 +64,7 @@ class VideoMonitorApp(tk.Tk):
         
         #Data 5
         self.latdir = tk.Label(self.detail_frame, text="Lat Direction:")
-        self.lat_dir.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+        self.latdir.grid(row=4, column=0, padx=5, pady=5, sticky="w")
         
         self.ld_value = StringVar()
         self.ld_value.set("0")
