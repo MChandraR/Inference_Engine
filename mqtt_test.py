@@ -79,8 +79,6 @@ class myMqtt:
     def on_message(self, mqttc, obj, msg):
         data = json.loads(msg.payload.decode())
         print(data)
-        if self.form is not None:
-            self.form.log_value.set( self.form.log_value.get() + ("\n" + str(data)))
 
         lat = data['lat']
         lon = data['lon']
@@ -89,6 +87,13 @@ class myMqtt:
         distance = self.calculate_distance(lat, lon, self.lats[self.counter-1], self.lons[self.counter-1])
         heading = self.calculate_heading(lat, lon, self.lats[self.counter-1], self.lons[self.counter-1])
 
+        if self.form is not None:
+            self.form.log_value.set(  ("\n" + str(data)))
+            self.form.lat_value.set(lat)
+            self.form.long_value.set(lon)
+            self.form.ld_value.set(data['latDirection'])
+            self.form.lgd_value.set(data['lonDirection'])
+            
         adj_azimuth = (azimuth + 360) % 360
         adj_heading = adj_azimuth - heading
         if adj_heading < 0:
@@ -134,7 +139,7 @@ class myMqtt:
 mymqtt = myMqtt()
 async def mqtt():
     mqttc = mymqtt.mqttc
-    mqttc.connect_async("192.168.43.85", 1883)
+    mqttc.connect_async("192.168.1.5", 1883)
     mqttc.subscribe("sensor/data", 0)
     thread = threading.Thread(target=mqttc.loop_forever)
     thread.start()

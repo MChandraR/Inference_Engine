@@ -45,40 +45,40 @@ class VideoMonitorApp(tk.Tk):
         self.counter_value_label.grid(row=1, column=1, padx=5, pady=5, sticky="w")
         
         #Data 3
-        self.counter_label = tk.Label(self.detail_frame, text="Lat:")
-        self.counter_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+        self.lat = tk.Label(self.detail_frame, text="Lat:")
+        self.lat.grid(row=2, column=0, padx=5, pady=5, sticky="w")
         
-        self.counter_value = StringVar()
-        self.counter_value.set("0")
-        self.counter_value_label = tk.Label(self.detail_frame, textvariable=self.counter_value)
-        self.counter_value_label.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+        self.lat_value = StringVar()
+        self.lat_value.set("0")
+        self.LatValue = tk.Label(self.detail_frame, textvariable=self.lat_value)
+        self.LatValue.grid(row=2, column=1, padx=5, pady=5, sticky="w")
         
         #Data 4
-        self.counter_label = tk.Label(self.detail_frame, text="Long:")
-        self.counter_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+        self.long = tk.Label(self.detail_frame, text="Long:")
+        self.long.grid(row=3, column=0, padx=5, pady=5, sticky="w")
         
-        self.counter_value = StringVar()
-        self.counter_value.set("0")
-        self.counter_value_label = tk.Label(self.detail_frame, textvariable=self.counter_value)
-        self.counter_value_label.grid(row=3, column=1, padx=5, pady=5, sticky="w")
+        self.long_value = StringVar()
+        self.long_value.set("0")
+        self.LongValue = tk.Label(self.detail_frame, textvariable=self.long_value)
+        self.LongValue.grid(row=3, column=1, padx=5, pady=5, sticky="w")
         
         #Data 5
-        self.counter_label = tk.Label(self.detail_frame, text="Lat Direction:")
-        self.counter_label.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+        self.latdir = tk.Label(self.detail_frame, text="Lat Direction:")
+        self.lat_dir.grid(row=4, column=0, padx=5, pady=5, sticky="w")
         
-        self.counter_value = StringVar()
-        self.counter_value.set("0")
-        self.counter_value_label = tk.Label(self.detail_frame, textvariable=self.counter_value)
-        self.counter_value_label.grid(row=4, column=1, padx=5, pady=5, sticky="w")
+        self.ld_value = StringVar()
+        self.ld_value.set("0")
+        self.latDirection = tk.Label(self.detail_frame, textvariable=self.ld_value)
+        self.latDirection.grid(row=4, column=1, padx=5, pady=5, sticky="w")
         
         #Data 6
         self.counter_label = tk.Label(self.detail_frame, text="Long Direction:")
         self.counter_label.grid(row=5, column=0, padx=5, pady=5, sticky="w")
         
-        self.counter_value = StringVar()
-        self.counter_value.set("0")
-        self.counter_value_label = tk.Label(self.detail_frame, textvariable=self.counter_value)
-        self.counter_value_label.grid(row=5, column=1, padx=5, pady=5, sticky="w")
+        self.lgd_value = StringVar()
+        self.lgd_value.set("0")
+        self.longDirection = tk.Label(self.detail_frame, textvariable=self.lgd_value)
+        self.longDirection.grid(row=5, column=1, padx=5, pady=5, sticky="w")
         
         
         # Baris kedua, kolom kedua untuk tombol pengaturan counter dan posisi
