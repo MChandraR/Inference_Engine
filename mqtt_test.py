@@ -27,6 +27,8 @@ class myMqtt:
             104.468222,
             104.468213
         ]
+        
+        self.form = None
 
         self.Kp = 1.0
         self.Ki = 0.0
@@ -77,6 +79,8 @@ class myMqtt:
     def on_message(self, mqttc, obj, msg):
         data = json.loads(msg.payload.decode())
         print(data)
+        if self.form is not None:
+            self.form.log_value.set( self.form.log_value.get() + ("\n" + str(data)))
 
         lat = data['lat']
         lon = data['lon']
@@ -122,6 +126,9 @@ class myMqtt:
 
     def on_log(self, mqttc, obj, level, string):
         print(string)
+        
+    def setForm(self, form):
+        self.form = form
 
 
 mymqtt = myMqtt()

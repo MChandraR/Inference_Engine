@@ -6,13 +6,12 @@ import time
 from threading import Thread
 
 import cv2
-
 class VideoMonitorApp(tk.Tk):
     def __init__(self, mqtt):
         super().__init__()
         self.title("Video Monitor App")
         self.geometry("1230x640")
-        self.mqtt = mqtt
+        
         
         # Bagian baris pertama untuk video monitoring
         self.video_frame_1 = tk.Label(self, text="Video 1", bg="gray", width=55, height=20)
@@ -100,9 +99,15 @@ class VideoMonitorApp(tk.Tk):
         
         #tambahan
         self.detail_frames = tk.Frame(self, bg="white", width=10, height=10)
-        self.detail_frames.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        self.detail_frames.grid(row=2, column=0,columnspan=2, padx=10, pady=10, sticky="nsew")
         self.log_label = tk.Label(self.detail_frames, text="Log:")
-        self.log_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+        self.log_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        
+        self.log_value = StringVar()
+        self.log_value.set("0")
+        self.log_area = tk.Label(self.detail_frames, textvariable=self.log_value)
+        self.log_area.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+
 
         # Counter dan posisi default
         self.counter = 0
@@ -111,6 +116,9 @@ class VideoMonitorApp(tk.Tk):
         
         # Simulasi video update
         self.after(1000, self.update_video_frames)
+        
+        mqtt.setForm(self)
+        self.mqtt = mqtt
 
     def update_video_frames(self):
         # Simulasi update frame video setiap detik
@@ -144,7 +152,7 @@ class VideoMonitorApp(tk.Tk):
         self.coordinate_value.set(f"(X: {self.x_position}, Y: {self.y_position})")
 
     def update_log(self, msg):
-        self.log_label.set(str(msg))
+        self.log_value.set(str(msg))
 
         
     def on_close(self):
@@ -159,4 +167,3 @@ def launchApp(mqtt):
     app.mainloop()
 
 
-launchApp(None)

@@ -225,7 +225,7 @@ async def run(
                     frames = form.app.video_frame_3
 
                 form.app.display_frame(frames,im0)
-                cv2.waitKey(1)  # 1 millisecond
+                # cv2.waitKey(1)  # 1 millisecond
 
             # Save results (image with detections)
             if False:
@@ -291,7 +291,7 @@ def start2():
     asyncio.run(inference2())
 def start3():   
     asyncio.run(inference3())
-   
+
 formThread = Thread(target=form.launchApp, args=(mqtt_test.mymqtt,))
 inf1 = Thread(target=start1)
 inf2 = Thread(target=start2)
