@@ -91,12 +91,12 @@ class VideoMonitorApp(tk.Tk):
         
         #Data 1.2
         self.lon2_label = tk.Label(self.detail_frame, text="Lat 2:")
-        self.lon2_label.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+        self.lon2_label.grid(row=1, column=2, padx=5, pady=5, sticky="w")
         
         self.lon2_value = StringVar()
         self.lon2_value.set("")
         self.lon2 = tk.Label(self.detail_frame, textvariable=self.lon2_value)
-        self.lon2.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+        self.lon2.grid(row=1, column=3, padx=5, pady=5, sticky="w")
         
         
         # Baris kedua, kolom kedua untuk tombol pengaturan counter dan posisi
