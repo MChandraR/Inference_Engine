@@ -80,6 +80,24 @@ class VideoMonitorApp(tk.Tk):
         self.longDirection = tk.Label(self.detail_frame, textvariable=self.lgd_value)
         self.longDirection.grid(row=5, column=1, padx=5, pady=5, sticky="w")
         
+        #Data 1.1
+        self.lat2_label = tk.Label(self.detail_frame, text="Lat 2:")
+        self.lat2_label.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+        
+        self.lat2_value = StringVar()
+        self.lat2_value.set("")
+        self.lat2 = tk.Label(self.detail_frame, textvariable=self.lat2_value)
+        self.lat2.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+        
+        #Data 1.2
+        self.lon2_label = tk.Label(self.detail_frame, text="Lat 2:")
+        self.lon2_label.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+        
+        self.lon2_value = StringVar()
+        self.lon2_value.set("")
+        self.lon2 = tk.Label(self.detail_frame, textvariable=self.lon2_value)
+        self.lon2.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+        
         
         # Baris kedua, kolom kedua untuk tombol pengaturan counter dan posisi
         self.control_frame = tk.Frame(self)

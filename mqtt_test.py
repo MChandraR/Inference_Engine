@@ -94,6 +94,8 @@ class myMqtt:
             self.form.long_value.set(lon)
             self.form.ld_value.set(data['latDirection'])
             self.form.lgd_value.set(data['lonDirection'])
+            self.form.lat2_vaule.set(self.lats[self.counter-1])
+            self.form.lon2_value.set(self.lons[self.counter-1])
             
         adj_azimuth = (azimuth + 360) % 360
         adj_heading = adj_azimuth - heading
@@ -140,7 +142,7 @@ class myMqtt:
 mymqtt = myMqtt()
 async def mqtt():
     mqttc = mymqtt.mqttc
-    mqttc.connect_async("192.168.1.5", 1883)
+    mqttc.connect_async("192.168.1.105", 1883)
     mqttc.subscribe("sensor/data", 0)
     thread = threading.Thread(target=mqttc.loop_forever)
     thread.start()
