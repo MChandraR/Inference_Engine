@@ -11,6 +11,7 @@ class VideoMonitorApp(tk.Tk):
         super().__init__()
         self.title("Video Monitor App")
         self.geometry("1240x640")
+        self.active = True
         
         
         # Bagian baris pertama untuk video monitoring
@@ -197,7 +198,7 @@ class VideoMonitorApp(tk.Tk):
         
     def on_close(self):
         # Fungsi untuk menutup aplikasi dengan benar dan melepaskan resource
-       
+        self.active = False
         self.destroy()
 
 def launchApp(mqtt):

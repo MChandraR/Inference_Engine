@@ -85,6 +85,7 @@ model = DetectMultiBackend(weights=weights, device=device, dnn=False, data=data,
 @smart_inference_mode()
 async def run(
     idx,
+    mode = 0,
     weights=ROOT / "exp5/weights/best.pt",  # model path or triton URL
     source="http://192.168.2.148:8081/?action=stream",  # file/dir/URL/glob/screen/0(webcam)
     data=ROOT / "datasets/data.yaml",  # dataset.yaml path
@@ -127,7 +128,7 @@ async def run(
     bs = 1  # batch_size
  
     view_img = check_imshow(warn=True)
-    dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride)
+    dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride, form=form)
     bs = len(dataset)
 
     vid_path, vid_writer = [None] * bs, [None] * bs
@@ -135,7 +136,7 @@ async def run(
     # Run inference
     model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
     seen, windows, dt = 0, [], (Profile(device=device), Profile(device=device), Profile(device=device))
-    for path, im, im0s, vid_cap, s in dataset:
+    for path, im, im0s, vid_cap, s in dataset: 
         with dt[0]:
             im = torch.from_numpy(im).to(model.device)
             im = im.half() if model.fp16 else im.float()  # uint8 to fp16/32
@@ -223,8 +224,9 @@ async def run(
                     frames = form.app.video_frame_2
                 elif idx == 3:
                     frames = form.app.video_frame_3
-
-                form.app.display_frame(frames,im0)
+                if form.app is not None:
+                    if mode == 0 :cv2.line(im0, (320, 0), (320, 479), (0, 255, 0), thickness=2)
+                    form.app.display_frame(frames,im0)
                 # cv2.waitKey(1)  # 1 millisecond
 
             # Save results (image with detections)
@@ -267,16 +269,21 @@ async def mains():
         
 async def inference1():
     global form
-    asyncio.create_task(run(idx=1,source="http://192.168.1.4:8080/?action=stream"))
-    
+    try:
+        asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.4:8080/?action=stream"))
+        # asyncio.create_task(run(idx=1,source="http://10.24.0.60:4747/video"))
+    except Exception as e:
+        print(e)
     
 async def inference2():
     global form
+    pass
     asyncio.create_task(run(idx=2,source="http://192.168.1.4:8081/?action=stream"))
     
 async def inference3():
     global form
-    asyncio.create_task(run(idx=3,source="http://192.168.1.3:8080/?action=stream"))
+    pass
+    asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.3:8080/?action=stream"))
 
 
 
@@ -286,7 +293,10 @@ async def inference3():
 #     # run()
 #     # thread.join()
 def start1():
-    asyncio.run(inference1())
+    try:
+        asyncio.run(inference1())
+    except Exception as e:
+        print(e)
 def start2():   
     asyncio.run(inference2())
 def start3():   
@@ -301,6 +311,9 @@ inf1.start()
 inf2.start()
 inf3.start()
 formThread.join()
-inf1.join()
+try:
+    inf1.join()
+except Exception as e:
+    print(e) 
 inf2.join(0)
 inf3.join(0)

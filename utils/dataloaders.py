@@ -428,10 +428,11 @@ class LoadImages:
 
 class LoadStreams:
     # YOLOv5 streamloader, i.e. `python detect.py --source 'rtsp://example.com/media.mp4'  # RTSP, RTMP, HTTP streams`
-    def __init__(self, sources="file.streams", img_size=640, stride=32, auto=True, transforms=None, vid_stride=1):
+    def __init__(self, sources="file.streams", img_size=640, stride=32, auto=True, transforms=None, vid_stride=1, form = None):
         """Initializes a stream loader for processing video streams with YOLOv5, supporting various sources including
         YouTube.
         """
+        self.form = form
         torch.backends.cudnn.benchmark = True  # faster for fixed-size inference
         self.mode = "stream"
         self.img_size = img_size
@@ -502,8 +503,9 @@ class LoadStreams:
         done.
         """
         self.count += 1
-        if not all(x.is_alive() for x in self.threads) or cv2.waitKey(1) == ord("q"):  # q to quit
-            cv2.destroyAllWindows()
+        print(self.count)
+        if not all(x.is_alive() for x in self.threads) or cv2.waitKey(1) == ord("q") or (not self.form.app.active) :  # q to quit
+            # cv2.destroyAllWindows()
             raise StopIteration
 
         im0 = self.imgs.copy()
