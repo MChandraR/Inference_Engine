@@ -122,8 +122,8 @@ class myMqtt:
         # servo_angle = 90 - output
         # servo_angle = max(0, min(servo_angle, 180))
         if distance < 2:
-            self.counter += 1
-            self.form.counter_value.set(str(self.counter))
+            self.counter += (1 if self.counter + 1 <= len(self.las) else 0)
+            if self.form is not None : self.form.counter_value.set(str(self.counter))
 
         res =  json.dumps({
             "distance": distance,
