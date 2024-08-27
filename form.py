@@ -10,7 +10,7 @@ class VideoMonitorApp(tk.Tk):
     def __init__(self, mqtt):
         super().__init__()
         self.title("Video Monitor App")
-        self.geometry("1240x640")
+        self.geometry("1240x660")
         self.active = True
         
         
@@ -146,6 +146,11 @@ class VideoMonitorApp(tk.Tk):
         self.log_value.set("0")
         self.log_area = tk.Label(self.detail_frames, textvariable=self.log_value)
         self.log_area.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        
+        self.log_res = StringVar()
+        self.log_res.set("0")
+        self.log_res_value = tk.Label(self.detail_frames, textvariable=self.log_res)
+        self.log_res_value.grid(row=2, column=0, padx=5, pady=5, sticky="w")
         
         
 

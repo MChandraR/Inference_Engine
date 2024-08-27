@@ -33,6 +33,7 @@ class myMqtt:
         self.Kp = 1.0
         self.Ki = 0.0
         self.Kd = 0.1
+        self.radius = 1
 
         self.setpoint = 0
         self.inputs = 0
@@ -120,14 +121,18 @@ class myMqtt:
 
         # servo_angle = 90 - output
         # servo_angle = max(0, min(servo_angle, 180))
-
-        mqttc.publish("data/result", json.dumps({
+        if distance < self.radius:
+            counter += 1
+        res =  json.dumps({
             "distance": distance,
             "adjHeading": adj_heading,
             "adjAzm": adj_azimuth,
             "setpoint": self.setpoint,
             "counter": self.counter,
-        }))
+        })
+        if self.form is not None: self.form.log_res.set(str(res))
+        mqttc.publish("data/result",res)
+            
 
     def on_subscribe(self, mqttc, obj, mid, reason_code_list):
         print("Subscribed: " + str(mid) + " " + str(reason_code_list))
