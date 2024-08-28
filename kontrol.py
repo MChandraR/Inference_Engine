@@ -7,11 +7,10 @@ MQTT_PORT = 1883
 MQTT_TOPIC = "keyboard/input"
 
 # Fungsi untuk mengirim pesan melalui MQTT
+client = mqtt.Client()
+client.connect_async(MQTT_BROKER, MQTT_PORT, 60)
 def send_mqtt_message(key):
-    client = mqtt.Client()
-    client.connect(MQTT_BROKER, MQTT_PORT, 60)
     client.publish(MQTT_TOPIC, key)
-    client.disconnect()
 
 # Fungsi untuk menangani input keyboard
 def on_key_press(event):
@@ -29,3 +28,5 @@ root.bind("<KeyPress>", on_key_press)
 
 # Loop Tkinter
 root.mainloop()
+client.disconnect()
+
