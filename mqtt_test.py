@@ -97,6 +97,12 @@ class myMqtt:
             self.form.lgd_value.set(data['lonDirection'])
             self.form.lat2_value.set(str(self.lats[self.counter-1]))
             self.form.lon2_value.set(str(self.lons[self.counter-1]))
+            self.form.lat1Value.set(str(self.lats[0]))
+            self.form.lat2Value.set(str(self.lats[1]))
+            self.form.lat3Value.set(str(self.lats[2]))
+            self.form.lat4Value.set(str(self.lats[3]))
+            self.form.lat5Value.set(str(self.lats[4]))
+            self.form.lat6Value.set(str(self.lats[5]))
             
         adj_azimuth = (azimuth + 360) % 360
         adj_heading = adj_azimuth - heading

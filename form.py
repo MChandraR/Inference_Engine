@@ -147,7 +147,7 @@ class VideoMonitorApp(tk.Tk):
         self.index = tk.OptionMenu(self.detail_frame,self.clicked, *self.option )
         self.index.grid(row=4, column=4, padx=5, pady=5, sticky="w")
         
-        self.save_coor = tk.Button(self.detail_frame, text="  Simpan  ", command=self.update_counter_plus)
+        self.save_coor = tk.Button(self.detail_frame, text="  Simpan  ", command=self.updateLatLon)
         self.save_coor.grid(row=5, column=4, padx=5, pady=5, sticky="w")
         
         
@@ -166,22 +166,66 @@ class VideoMonitorApp(tk.Tk):
         self.infLabel.grid(row=2, column=0, padx=5, pady=5, sticky="w")
         
         #LatLon1
-        self.lat2Label = tk.Label(self.control_frame, text="1 | Lat & Lon :")
+        self.lat2Label = tk.Label(self.control_frame, text="1 ) Lat & Lon :")
         self.lat2Label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+        
+        self.lat1Value = StringVar()
+        self.lat1Value.set("0.0")
+        self.infLabel = tk.Label(self.control_frame, textvariable=self.lat1Value)
+        self.infLabel.grid(row=3, column=1, padx=5, pady=5, sticky="w")
+        
+        #LatLon2
+        self.lat2Label = tk.Label(self.control_frame, text="2 ) Lat & Lon :")
+        self.lat2Label.grid(row=4, column=0, padx=5, pady=5, sticky="w")
         
         self.lat2Value = StringVar()
         self.lat2Value.set("0.0")
         self.infLabel = tk.Label(self.control_frame, textvariable=self.lat2Value)
-        self.infLabel.grid(row=3, column=1, padx=5, pady=5, sticky="w")
+        self.infLabel.grid(row=4, column=1, padx=5, pady=5, sticky="w")
         
         #LatLon3
-        self.lat3Label = tk.Label(self.control_frame, text="2 | Lat & Lon :")
-        self.lat3Label.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+        self.lat3Label = tk.Label(self.control_frame, text="3 ) Lat & Lon :")
+        self.lat3Label.grid(row=5, column=0, padx=5, pady=5, sticky="w")
         
         self.lat3Value = StringVar()
         self.lat3Value.set("0.0")
         self.infLabel = tk.Label(self.control_frame, textvariable=self.lat3Value)
-        self.infLabel.grid(row=4, column=1, padx=5, pady=5, sticky="w")
+        self.infLabel.grid(row=5, column=1, padx=5, pady=5, sticky="w")
+        
+        #LatLon4
+        self.lat4Label = tk.Label(self.control_frame, text="4 ) Lat & Lon :")
+        self.lat4Label.grid(row=3, column=3, padx=5, pady=5, sticky="w")
+        
+        self.lat4Value = StringVar()
+        self.lat4Value.set("0.0")
+        self.infLabel = tk.Label(self.control_frame, textvariable=self.lat4Value)
+        self.infLabel.grid(row=3, column=4, padx=5, pady=5, sticky="w")
+        
+        #LatLon5
+        self.lat5Label = tk.Label(self.control_frame, text="5 ) Lat & Lon :")
+        self.lat5Label.grid(row=4, column=3, padx=5, pady=5, sticky="w")
+        
+        self.lat5Value = StringVar()
+        self.lat5Value.set("0.0")
+        self.infLabel = tk.Label(self.control_frame, textvariable=self.lat5Value)
+        self.infLabel.grid(row=4, column=4, padx=5, pady=5, sticky="w")
+        
+        #LatLon6
+        self.lat6Label = tk.Label(self.control_frame, text="6 ) Lat & Lon :")
+        self.lat6Label.grid(row=5, column=3, padx=6, pady=5, sticky="w")
+        self.lat6Value = StringVar()
+        self.lat6Value.set("0.0")
+        self.infLabel = tk.Label(self.control_frame, textvariable=self.lat6Value)
+        self.infLabel.grid(row=5, column=4, padx=5, pady=5, sticky="w")
+        
+        #Barier
+        self.b1 = tk.Label(self.control_frame, text=" | ")
+        self.b1.grid(row=3, column=2, padx=5, pady=5, sticky="w")
+        self.b2 = tk.Label(self.control_frame, text=" | ")
+        self.b2.grid(row=4, column=2, padx=5, pady=5, sticky="w")
+        self.b3 = tk.Label(self.control_frame, text=" | ")
+        self.b3.grid(row=5, column=2, padx=5, pady=5, sticky="w")
+    
         
         #tambahan
         self.detail_frames = tk.Frame(self, bg="white", width=10, height=10)
@@ -200,9 +244,6 @@ class VideoMonitorApp(tk.Tk):
         self.log_res_value = tk.Label(self.detail_frames, textvariable=self.log_res)
         self.log_res_value.grid(row=2, column=0, padx=5, pady=5, sticky="w")
         
-        
-
-
         # Counter dan posisi default
         self.counter = 0
         self.x_position = 0
@@ -213,6 +254,14 @@ class VideoMonitorApp(tk.Tk):
         
         mqtt.setForm(self)
         self.mqtt = mqtt
+        
+    def updateLatLon(self):
+        try:
+            idx = min(int(self.index.get())-1, len(self.mqtt.lats)-1)
+            self.mqtt.lats[idx] = int(self.latSet.get())
+            self.mqtt.lons[idx] = int(self.longSet.get())
+        except ValueError:
+            print(ValueError)
 
     def update_video_frames(self):
         # Simulasi update frame video setiap detik
