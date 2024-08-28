@@ -9,7 +9,7 @@ import cv2
 class VideoMonitorApp(tk.Tk):
     def __init__(self, mqtt):
         super().__init__()
-        self.title("Video Monitor App")
+        self.title("GOERINDAM CYBER SEA - AVS MONITORING PANEL")
         self.geometry("1240x660")
         self.active = True
         
@@ -29,47 +29,52 @@ class VideoMonitorApp(tk.Tk):
         
         # Data 1
         self.coordinate_label = tk.Label(self.detail_frame, text="Azimuth:")
-        self.coordinate_label.grid(row=0, column=0,padx=5, pady=5, sticky="w")
+        self.coordinate_label.grid(row=3, column=0,padx=5, pady=5, sticky="w")
+        self.coordinate_label.config(background="white")
         
         self.coordinate_value = StringVar()
         self.coordinate_value.set("(X: 0, Y: 0)")
         self.coordinate_value_label = tk.Label(self.detail_frame, textvariable=self.coordinate_value)
-        self.coordinate_value_label.grid(row=0, column=1, columnspan=2,padx=5, pady=5, sticky="w")
+        self.coordinate_value_label.grid(row=3, column=1, columnspan=2,padx=5, pady=5, sticky="w")
         self.coordinate_value_label.config(width=40)
         
         #Data 2
         self.counter_label = tk.Label(self.detail_frame, text="Counter:")
-        self.counter_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        self.counter_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+        self.counter_label.config(background="white")
         
         self.counter_value = StringVar()
         self.counter_value.set("0")
         self.counter_value_label = tk.Label(self.detail_frame, textvariable=self.counter_value)
-        self.counter_value_label.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+        self.counter_value_label.grid(row=2, column=1, padx=5, pady=5, sticky="w")
         self.counter_value_label.config(width=40)
         
         #Data 3
         self.lat = tk.Label(self.detail_frame, text="Lat:")
-        self.lat.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+        self.lat.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        self.lat.config(background="white")
         
         self.lat_value = StringVar()
         self.lat_value.set("0")
         self.LatValue = tk.Label(self.detail_frame, textvariable=self.lat_value)
-        self.LatValue.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+        self.LatValue.grid(row=0, column=1, padx=5, pady=5, sticky="w")
         self.LatValue.config(width=40)
         
         #Data 4
         self.long = tk.Label(self.detail_frame, text="Long:")
-        self.long.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+        self.long.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        self.long.config(background="white")
         
         self.long_value = StringVar()
         self.long_value.set("0")
         self.LongValue = tk.Label(self.detail_frame, textvariable=self.long_value)
-        self.LongValue.grid(row=3, column=1, padx=5, pady=5, sticky="w")
+        self.LongValue.grid(row=1, column=1, padx=5, pady=5, sticky="w")
         self.LongValue.config(width=40)
         
         #Data 5
         self.latdir = tk.Label(self.detail_frame, text="Lat Direction:")
         self.latdir.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+        self.latdir.config(background="white")
         
         self.ld_value = StringVar()
         self.ld_value.set("0")
@@ -78,8 +83,9 @@ class VideoMonitorApp(tk.Tk):
         self.latDirection.config(width=40)
         
         #Data 6
-        self.counter_label = tk.Label(self.detail_frame, text="Long Direction:")
-        self.counter_label.grid(row=5, column=0, padx=5, pady=5, sticky="w")
+        self.londir = tk.Label(self.detail_frame, text="Long Direction:")
+        self.londir.grid(row=5, column=0, padx=5, pady=5, sticky="w")
+        self.londir.config(background="white")
         
         self.lgd_value = StringVar()
         self.lgd_value.set("0")
@@ -90,6 +96,7 @@ class VideoMonitorApp(tk.Tk):
         #Data 1.1
         self.lat2_label = tk.Label(self.detail_frame, text="Lat 2:")
         self.lat2_label.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+        self.lat2_label.config(background="white")
         
         self.lat2_value = StringVar()
         self.lat2_value.set("")
@@ -100,6 +107,7 @@ class VideoMonitorApp(tk.Tk):
         #Data 1.2
         self.lon2_label = tk.Label(self.detail_frame, text="Lon 2:")
         self.lon2_label.grid(row=1, column=3, padx=5, pady=5, sticky="w")
+        self.lon2_label.config(background="white")
         
         self.lon2_value = StringVar()
         self.lon2_value.set("")
@@ -107,40 +115,80 @@ class VideoMonitorApp(tk.Tk):
         self.lon2.grid(row=1, column=4, padx=5, pady=5, sticky="w")
         self.lon2.config(width=40)
         
+        #Data 1.3
+        self.latSet_label = tk.Label(self.detail_frame, text="Lat Value:")
+        self.latSet_label.grid(row=2, column=3, padx=5, pady=5, sticky="w")
+        self.latSet_label.config(background="white")
+        
+        self.latSet = tk.Entry(self.detail_frame)
+        self.latSet.grid(row=2, column=4, padx=5, pady=5, sticky="w")
+        self.latSet.config(background="#dcdcdc", justify="left")
+        
+        #Data 1.4
+        self.longSet_label = tk.Label(self.detail_frame, text="Long Value:")
+        self.longSet_label.grid(row=3, column=3, padx=5, pady=5, sticky="w")
+        self.longSet_label.config(background="white")
+        
+        self.longSet = tk.Entry(self.detail_frame)
+        self.longSet.grid(row=3, column=4, padx=5, pady=5, sticky="w")
+        self.longSet.config(background="#dcdcdc", justify="left")
+        
+        #Data 1.5
+        self.idxLabel = tk.Label(self.detail_frame, text="Pos:")
+        self.idxLabel.grid(row=4, column=3, padx=5, pady=5, sticky="w")
+        self.idxLabel.config(background="white")
+        
+        self.clicked = StringVar() 
+        self.option = [
+            "1","2","3","4","5","6"
+        ]
+        # initial menu text 
+        self.clicked.set( self.option[0] ) 
+        self.index = tk.OptionMenu(self.detail_frame,self.clicked, *self.option )
+        self.index.grid(row=4, column=4, padx=5, pady=5, sticky="w")
+        
+        self.save_coor = tk.Button(self.detail_frame, text="  Simpan  ", command=self.update_counter_plus)
+        self.save_coor.grid(row=5, column=4, padx=5, pady=5, sticky="w")
+        
         
         # Baris kedua, kolom kedua untuk tombol pengaturan counter dan posisi
         self.control_frame = tk.Frame(self)
         self.control_frame.grid(row=1, column=2, padx=10, pady=10, sticky="nsew")
         
-        self.save_coor = tk.Button(self.control_frame, text="  Simpan  ", command=self.update_counter_plus)
-        self.save_coor.grid(row=0, column=0, padx=5, pady=5)
+        self.update_counter_button = tk.Button(self.control_frame, text="Counter Plus", command=self.update_counter_plus)
+        self.update_counter_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
         
-        self.update_counter_button = tk.Button(self.control_frame, text="Counter +", command=self.update_counter_plus)
-        self.update_counter_button.grid(row=1, column=0, padx=5, pady=5)
+        self.update_position_button = tk.Button(self.control_frame, text="Counter Min", command=self.update_counter_min)
+        self.update_position_button.grid(row=1, column=0, padx=5, pady=5, sticky="w")
         
-        self.update_position_button = tk.Button(self.control_frame, text="Counter -", command=self.update_counter_min)
-        self.update_position_button.grid(row=2, column=0, padx=5, pady=5)
+        #Informasi lat dan long
+        self.infLabel = tk.Label(self.control_frame, text="Nilai Lat & Long:")
+        self.infLabel.grid(row=2, column=0, padx=5, pady=5, sticky="w")
         
-        self.counter_entry = tk.Entry(self.control_frame)
-        self.counter_entry.grid(row=0, column=3, padx=5, pady=5)
+        #LatLon1
+        self.lat2Label = tk.Label(self.control_frame, text="1 | Lat & Lon :")
+        self.lat2Label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
         
-        self.coor_entry = tk.Entry(self.control_frame)
-        self.coor_entry.grid(row=0, column=4, padx=5, pady=5)
+        self.lat2Value = StringVar()
+        self.lat2Value.set("0.0")
+        self.infLabel = tk.Label(self.control_frame, textvariable=self.lat2Value)
+        self.infLabel.grid(row=3, column=1, padx=5, pady=5, sticky="w")
         
-        self.clicked = StringVar() 
-        self.option = [
-            "1","2","3","4"
-        ]
-        # initial menu text 
-        self.clicked.set( self.option[0] ) 
-        self.index = tk.OptionMenu(self.control_frame,self.clicked, *self.option )
-        self.index.grid(row=0, column=5, padx=5, pady=5)
+        #LatLon3
+        self.lat3Label = tk.Label(self.control_frame, text="2 | Lat & Lon :")
+        self.lat3Label.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+        
+        self.lat3Value = StringVar()
+        self.lat3Value.set("0.0")
+        self.infLabel = tk.Label(self.control_frame, textvariable=self.lat3Value)
+        self.infLabel.grid(row=4, column=1, padx=5, pady=5, sticky="w")
         
         #tambahan
         self.detail_frames = tk.Frame(self, bg="white", width=10, height=10)
         self.detail_frames.grid(row=2, column=0,columnspan=2, padx=10, pady=10, sticky="nsew")
         self.log_label = tk.Label(self.detail_frames, text="Log:")
         self.log_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        self.log_label.config(background="white")
         
         self.log_value = StringVar()
         self.log_value.set("0")
