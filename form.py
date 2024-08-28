@@ -10,7 +10,7 @@ class VideoMonitorApp(tk.Tk):
     def __init__(self, mqtt):
         super().__init__()
         self.title("GOERINDAM CYBER SEA - AVS MONITORING PANEL")
-        self.geometry("1240x660")
+        self.geometry("1270x660")
         self.active = True
         
         
