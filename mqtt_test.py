@@ -137,6 +137,8 @@ class myMqtt:
             "adjAzm": adj_azimuth,
             "setpoint": self.setpoint,
             "counter": self.counter,
+            "lat2" : self.lats[self.counter-1],
+            "long2" : self.lons[self.counter-1]
         })
         if self.form is not None: self.form.log_res.set(str(res))
         mqttc.publish("data/result",res)

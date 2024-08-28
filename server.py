@@ -76,7 +76,7 @@ def stream_video(url, window_name):
                 
     cv2.destroyAllWindows()
 
-weights="./exp5/weights/best.pt"  # model path or triton URL
+weights="./exp/weights/best.pt"  # model path or triton URL
 data="./datasets/data.yaml" # dataset.yaml path
 
 device = select_device("")
@@ -254,7 +254,7 @@ async def run(
     # Print results
     t = tuple(x.t / seen * 1e3 for x in dt)  # speeds per image
     LOGGER.info(f"Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}" % t)
-    if save_txt or save_img:
+    if True:
         s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ""
         LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
     if update:

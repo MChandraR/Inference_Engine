@@ -1,5 +1,6 @@
 import tkinter as tk
 import paho.mqtt.client as mqtt
+import threading
 
 # MQTT Configuration
 MQTT_BROKER = "192.168.1.105"  # Ganti dengan alamat broker MQTT Anda
@@ -25,8 +26,11 @@ root.title("Keyboard Input to MQTT")
 
 # Binding input keyboard ke fungsi on_key_press
 root.bind("<KeyPress>", on_key_press)
+thread = threading.Thread(target=client.loop_forever)
+thread.start()
 
 # Loop Tkinter
 root.mainloop()
+
 client.disconnect()
 

@@ -122,7 +122,7 @@ def train(hyp, opt, device, callbacks):
         opt.workers,
         opt.freeze,
     )
-    batch_size = 5
+    batch_size = 20
     callbacks.run("on_pretrain_routine_start")
 
     # Directories
