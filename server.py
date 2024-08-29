@@ -205,9 +205,12 @@ async def run(
                     if view_img:  # Add bbox to image
                         c = int(cls)  # integer class
                         label = None if hide_labels else (names[c] if hide_conf else f"{names[c]} {conf:.2f}")
-                        annotator.box_label(xyxy, label, color=colors(c, True))
+                        pos = (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3]))
+                        if int(pos[0][1]) > 180 and int(pos[1][1]) < 420 : annotator.box_label(xyxy, label, color=colors(c, True))
                     # if save_crop:
                         save_one_box(xyxy, imc, file=save_dir / "crops" / names[c] / f"{p.stem}.jpg", BGR=True)
+                    box = xyxy
+                    print( (int(box[0]), int(box[1])), (int(box[2]), int(box[3])))
 
             # Stream results
             im0 = annotator.result()
@@ -226,6 +229,8 @@ async def run(
                     frames = form.app.video_frame_3
                 if form.app is not None:
                     if mode == 0 :cv2.line(im0, (320, 0), (320, 479), (0, 255, 0), thickness=2)
+                    if mode == 0 :cv2.line(im0, (0, 180), (640, 180), (0, 255, 0), thickness=2)
+                    if mode == 0 :cv2.line(im0, (0, 400), (640, 400), (0, 255, 0), thickness=2)
                     form.app.display_frame(frames,im0)
                 # cv2.waitKey(1)  # 1 millisecond
 
@@ -277,12 +282,12 @@ async def inference1():
     
 async def inference2():
     global form
-    pass
+    # asyncio.create_task(run(idx=2,source="http://10.24.2.98:4747/video"))
+
     asyncio.create_task(run(idx=2,source="http://192.168.1.4:8081/?action=stream"))
     
 async def inference3():
     global form
-    pass
     asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.3:8080/?action=stream"))
 
 
