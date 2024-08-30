@@ -161,6 +161,9 @@ class VideoMonitorApp(tk.Tk):
         self.update_position_button = tk.Button(self.control_frame, text="Counter Min", command=self.update_counter_min)
         self.update_position_button.grid(row=8, column=3, padx=5, pady=5, sticky="w")
         
+        self.motor_set = tk.Button(self.control_frame, text="Motor Set", command=self.setMotor)
+        self.motor_set.grid(row=8, column=4, padx=5, pady=5, sticky="w")
+        
         #Informasi lat dan long
         self.infLabel = tk.Label(self.control_frame, text="Nilai Lat & Long:")
         self.infLabel.grid(row=2, column=0, padx=5, pady=5, sticky="w")
@@ -257,6 +260,7 @@ class VideoMonitorApp(tk.Tk):
         self.counter = 0
         self.x_position = 0
         self.y_position = 0
+        self.motor = 0
         
         # Simulasi video update
         self.after(1000, self.update_video_frames)
@@ -289,6 +293,10 @@ class VideoMonitorApp(tk.Tk):
         label.config(image=imgtk, width=400, height = 300)
         label.imgtk = imgtk
     
+    def setMotor(self):
+        self.motor = 1 if self.motor == 0 else 0
+        self.arahValue.set("Motor hidup" if self.motor ==1 else "Motor Mati")
+        if self.mqtt is not None: self.mqtt.motor = self.motor
     
     def update_counter_plus(self):
         self.mqtt.counter +=1

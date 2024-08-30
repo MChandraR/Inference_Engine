@@ -9,23 +9,23 @@ class myMqtt:
     def __init__(self) -> None:
         self.counter = 1
         self.lats = [
-            0.943595333,
-            0.943468667,
-            0.943425167,
-            0.943512,
-            0.9435415,
-            0.9435975,
-            0.912011
+            0.86848219,
+            0.86848211,
+            0.86848213,
+            0.86848212,
+            0.86848213,
+            0.86848212,
+            0.86848211,
         ]
 
         self.lons = [
-            104.435036,
-            104.435026,
-            104.4351305,
-            104.4351888,
-            104.4351545,
-            104.4350548,
-            104.468213
+            104.45952808,
+            104.45952828,
+            104.45952824,
+            104.45952826,
+            104.45952825,
+            104.45952826,
+            104.45952828
         ]
         
         self.form = None
@@ -36,6 +36,7 @@ class myMqtt:
         self.radius = 1
 
         self.setpoint = 0
+        self.motor = 0
         self.inputs = 0
         self.output = 0
         self.integral = 0
@@ -138,7 +139,8 @@ class myMqtt:
             "setpoint": self.setpoint,
             "counter": self.counter,
             "lat2" : self.lats[self.counter-1],
-            "long2" : self.lons[self.counter-1]
+            "long2" : self.lons[self.counter-1],
+            "motor" : self.motor
         })
         if self.form is not None: self.form.log_res.set(str(res))
         mqttc.publish("data/result",res)
