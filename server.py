@@ -125,6 +125,7 @@ async def run(
     imgsz = check_img_size(imgsz, s=stride)  # check image size
 
     # Dataloader
+
     bs = 1  # batch_size
  
     view_img = check_imshow(warn=True)
@@ -180,6 +181,7 @@ async def run(
             gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
             imc = im0.copy() if save_crop else im0  # for save_crop
             annotator = Annotator(im0, line_width=line_thickness, example=str(names))
+            pilot = "MANUAL"
             if len(det):
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
@@ -210,6 +212,9 @@ async def run(
                     # if save_crop:
                         save_one_box(xyxy, imc, file=save_dir / "crops" / names[c] / f"{p.stem}.jpg", BGR=True)
                     box = xyxy
+                    if pilot == "MANUAL" : 
+                        pilot = "AUTO" if (abs(int(box[0]) - int(box[2])) > 55) else "MANUAL"
+                        if (int(box[0]) - int(box[2]) > 30) : print("GACOR")
                     print( (int(box[0]), int(box[1])), (int(box[2]), int(box[3])))
 
             # Stream results
@@ -231,6 +236,12 @@ async def run(
                     if mode == 0 :cv2.line(im0, (320, 0), (320, 479), (0, 255, 0), thickness=2)
                     if mode == 0 :cv2.line(im0, (0, 180), (640, 180), (0, 255, 0), thickness=2)
                     if mode == 0 :cv2.line(im0, (0, 400), (640, 400), (0, 255, 0), thickness=2)
+                    if mode == 1 :cv2.line(im0, (0, 230), (640, 230), (255,0, 0), thickness=2)
+                    if mode == 1 :cv2.line(im0, (310, 0), (310, 480), (255,0, 0), thickness=2)
+
+                    if mode == 0 :cv2.putText(im0,pilot, (20,50), 0, 2, (255,0,0) , thickness=2, lineType=cv2.LINE_AA)
+
+
                     form.app.display_frame(frames,im0)
                 # cv2.waitKey(1)  # 1 millisecond
 
@@ -275,7 +286,7 @@ async def mains():
 async def inference1():
     global form
     try:
-        asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.4:8080/?action=stream"))
+        asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.5:8080/?action=stream"))
         # asyncio.create_task(run(idx=1,source="http://10.24.0.60:4747/video"))
     except Exception as e:
         print(e)
@@ -284,11 +295,11 @@ async def inference2():
     global form
     # asyncio.create_task(run(idx=2,source="http://10.24.2.98:4747/video"))
 
-    asyncio.create_task(run(idx=2,source="http://192.168.1.4:8081/?action=stream"))
+    asyncio.create_task(run(idx=2,source="http://192.168.1.5:8081/?action=stream"))
     
 async def inference3():
     global form
-    asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.3:8080/?action=stream"))
+    asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.4:8080/?action=stream"))
 
 
 

@@ -9,23 +9,21 @@ class myMqtt:
     def __init__(self) -> None:
         self.counter = 1
         self.lats = [
-            0.86848219,
-            0.86848211,
-            0.86848213,
-            0.86848212,
-            0.86848213,
-            0.86848212,
-            0.86848211,
+            0.868483667,
+            0.868497667,
+            0.868481667,
+            0.868440333,
+            0.868467667,
+            0.868483667,
         ]
 
         self.lons = [
-            104.45952808,
-            104.45952828,
-            104.45952824,
-            104.45952826,
-            104.45952825,
-            104.45952826,
-            104.45952828
+            104.459301,
+            104.45935,
+            104.4594308,
+            104.4594242,
+            104.4593183,
+            104.459301
         ]
         
         self.form = None
@@ -129,7 +127,7 @@ class myMqtt:
         # servo_angle = 90 - output
         # servo_angle = max(0, min(servo_angle, 180))
         if distance < 2:
-            self.counter += (1 if self.counter + 1 <= len(self.las) else 0)
+            self.counter += (1 if self.counter + 1 <= len(self.lats) else 0)
             if self.form is not None : self.form.counter_value.set(str(self.counter))
 
         res =  json.dumps({
@@ -140,7 +138,8 @@ class myMqtt:
             "counter": self.counter,
             "lat2" : self.lats[self.counter-1],
             "long2" : self.lons[self.counter-1],
-            "motor" : self.motor
+            "motor" : self.motor,
+            "speed" : 1650 if self.counter < 6 else 1550
         })
         if self.form is not None: self.form.log_res.set(str(res))
         mqttc.publish("data/result",res)
