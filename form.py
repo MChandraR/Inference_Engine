@@ -161,6 +161,12 @@ class VideoMonitorApp(tk.Tk):
         self.update_position_button = tk.Button(self.control_frame, text="Counter Min", command=self.update_counter_min)
         self.update_position_button.grid(row=8, column=3, padx=5, pady=5, sticky="w")
         
+        self.upspeed = tk.Button(self.control_frame, text="Speed Up", command=self.speedUp)
+        self.upspeed.grid(row=9, column=3, padx=5, pady=5, sticky="w")
+        
+        self.downspeed = tk.Button(self.control_frame, text="Speed Down", command=self.speedDown)
+        self.downspeed.grid(row=9, column=1, padx=5, pady=5, sticky="e")
+        
         self.motor_set = tk.Button(self.control_frame, text="Motor Set", command=self.setMotor)
         self.motor_set.grid(row=8, column=4, padx=5, pady=5, sticky="w")
         
@@ -267,6 +273,13 @@ class VideoMonitorApp(tk.Tk):
         
         mqtt.setForm(self)
         self.mqtt = mqtt
+    def speedUp(self):
+        if self.mqtt is not None : 
+            self.mqtt.speed += 10
+            
+    def speedDown(self):
+        if self.mqtt is not None:
+            self.mqtt.speed -= 10
         
     def updateLatLon(self):
         try:
@@ -326,5 +339,5 @@ def launchApp(mqtt):
     app.protocol("WM_DELETE_WINDOW", app.on_close)
     app.mainloop()
 
-# launchApp(None)
+# launchApp(Ngit one)
 

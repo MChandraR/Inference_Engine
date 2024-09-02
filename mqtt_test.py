@@ -27,6 +27,7 @@ class myMqtt:
         ]
         
         self.form = None
+        self.speed = 1650
 
         self.Kp = 1.0
         self.Ki = 0.0
@@ -139,7 +140,7 @@ class myMqtt:
             "lat2" : self.lats[self.counter-1],
             "long2" : self.lons[self.counter-1],
             "motor" : self.motor,
-            "speed" : 1650 if self.counter < 6 else 1550
+            "speed" : self.speed if self.counter < 6 else 1550
         })
         if self.form is not None: self.form.log_res.set(str(res))
         mqttc.publish("data/result",res)
