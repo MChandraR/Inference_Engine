@@ -9,21 +9,23 @@ class myMqtt:
     def __init__(self) -> None:
         self.counter = 1
         self.lats = [
-            0.868483667,
-            0.868497667,
-            0.868481667,
-            0.868440333,
-            0.868467667,
-            0.868483667,
+            0.868451,
+            0.868583167,
+            0.868479333,
+            0.868395833,
+            0.868376,
+            0.868397667,
+            0.868451
         ]
 
         self.lons = [
-            104.459301,
-            104.45935,
-            104.4594308,
-            104.4594242,
-            104.4593183,
-            104.459301
+            104.4592673,
+            104.4594323,
+            104.4595317,
+            104.4595205,
+            104.4594692,
+            104.4593845,
+            104.4592673
         ]
         
         self.form = None
@@ -159,7 +161,7 @@ class myMqtt:
 mymqtt = myMqtt()
 async def mqtt():
     mqttc = mymqtt.mqttc
-    mqttc.connect_async("192.168.1.8", 1883)
+    mqttc.connect_async("192.168.1.105", 1883)
     mqttc.subscribe("sensor/data", 0)
     thread = threading.Thread(target=mqttc.loop_forever)
     thread.start()
