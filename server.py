@@ -11,6 +11,7 @@ import cv2
 import numpy as np
 from threading import Thread
 import mqtt_test
+import json
 
 import form 
 import socketio
@@ -137,6 +138,8 @@ async def run(
     # Run inference
     model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
     seen, windows, dt = 0, [], (Profile(device=device), Profile(device=device), Profile(device=device))
+    prevAngle = 0
+
     for path, im, im0s, vid_cap, s in dataset: 
         with dt[0]:
             im = torch.from_numpy(im).to(model.device)
@@ -166,13 +169,14 @@ async def run(
 
         # Second-stage classifier (optional)
         # pred = utils.general.apply_classifier(pred, classifier_model, im, im0s)
-
         for i, det in enumerate(pred):  # per image
             seen += 1
            
             p, im0, frame = path[i], im0s[i].copy(), dataset.count
             s += f"{i}: "
-    
+            box = (0,0), (0,0)
+            ada = False
+            targetAngle = 0
 
             p = Path(p)  # to Path
             save_path = str(save_dir / p.name)  # im.jpg
@@ -182,6 +186,8 @@ async def run(
             imc = im0.copy() if save_crop else im0  # for save_crop
             annotator = Annotator(im0, line_width=line_thickness, example=str(names))
             pilot = "MANUAL"
+            sizeRed = 0
+            sizeGreen = 0
             if len(det):
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
@@ -190,7 +196,7 @@ async def run(
                 for c in det[:, 5].unique():
                     n = (det[:, 5] == c).sum()  # detections per class
                     s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
-
+                prevX = 0
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
                     c = int(cls)  # integer class
@@ -212,20 +218,33 @@ async def run(
                     # if save_crop:
                         save_one_box(xyxy, imc, file=save_dir / "crops" / names[c] / f"{p.stem}.jpg", BGR=True)
                     box = xyxy
+                    
+                       
                     if pilot == "MANUAL" : 
                         pilot = "AUTO" if (abs(int(box[0]) - int(box[2])) > 55) else "MANUAL"
                         if (int(box[0]) - int(box[2]) > 30) : print("GACOR")
+                    if mode == 0 and names[c] == "red_buoy" and pilot == "AUTO":
+                        if int(box[2] ) > 200 and abs(int(box[0]) - int(box[2])) > sizeRed : 
+                           sizeRed = abs(int(box[0]) - int(box[2]))
+                           prevX = max(0, int(box[2] ) - 200)
+                           targetAngle = 45
+                    if mode == 0 and names[c] == "green_buoy" and pilot == "AUTO":
+                        if int(box[0] ) < 440 and abs(abs(int(box[0]) - int(box[2]))) > sizeGreen: 
+                           sizeGreen = abs(int(box[0]) - int(box[2]))
+                           targetAngle = -50 if max(500-int(box[0]), 0) > prevX else targetAngle
                     print( (int(box[0]), int(box[1])), (int(box[2]), int(box[3])))
+            
+            if prevAngle is not targetAngle : 
+                mqtt_test.mymqtt.mqttc.publish("data/addAngle",json.dumps({
+                    "addAngle" : targetAngle
+                }))
+            prevAngle = targetAngle
+
 
             # Stream results
             im0 = annotator.result()
             frames = None
             if view_img:
-                # if platform.system() == "Linux" and p not in windows:
-                #     windows.append(p)
-                #     cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
-                #     cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
-                # cv2.imshow(str(p), im0)
                 if idx == 1:
                     frames = form.app.video_frame_1
                 elif idx == 2:
@@ -243,7 +262,6 @@ async def run(
 
 
                     form.app.display_frame(frames,im0)
-                # cv2.waitKey(1)  # 1 millisecond
 
             # Save results (image with detections)
             if False:
@@ -293,9 +311,9 @@ async def inference1():
     
 async def inference2():
     global form
-    # asyncio.create_task(run(idx=2,source="http://10.24.2.98:4747/video"))
+    asyncio.create_task(run(idx=2,source="http://192.168.1.4:4747/video"))
 
-    asyncio.create_task(run(idx=2,source="http://192.168.1.5:8081/?action=stream"))
+    # asyncio.create_task(run(idx=2,source="http://192.168.1.5:8081/?action=stream"))
     
 async def inference3():
     global form
