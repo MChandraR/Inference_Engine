@@ -236,7 +236,7 @@ async def run(
                            targetAngle = -50 if max(500-int(box[0]), 0) > prevX else targetAngle
                     print( (int(box[0]), int(box[1])), (int(box[2]), int(box[3])))
             
-            if prevAngle is not targetAngle and mode==0 and (curTime - time.time()) > 0.1:
+            if prevAngle is not targetAngle and mode==0 and abs(curTime - time.time()) > 0.1:
                 curTime = time.time() 
                 mqtt_test.mymqtt.mqttc.publish("data/addAngle",json.dumps({
                     "addAngle" : targetAngle
@@ -307,7 +307,7 @@ async def mains():
 async def inference1():
     global form
     try:
-        asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.5:8080/?action=stream"))
+        asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.5:8081/?action=stream"))
         # asyncio.create_task(run(idx=1,source="http://10.24.0.60:4747/video"))
     except Exception as e:
         print(e)
@@ -316,7 +316,7 @@ async def inference2():
     global form
     # asyncio.create_task(run(idx=2,source="http://192.168.1.4:4747/video"))
 
-    asyncio.create_task(run(idx=2,source="http://192.168.1.5:8081/?action=stream"))
+    asyncio.create_task(run(idx=2,source="http://192.168.1.5:8080/?action=stream"))
     
 async def inference3():
     global form
