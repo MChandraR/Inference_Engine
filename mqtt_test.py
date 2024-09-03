@@ -9,23 +9,21 @@ class myMqtt:
     def __init__(self) -> None:
         self.counter = 1
         self.lats = [
-            0.868451,
-            0.868583167,
-            0.868479333,
-            0.868395833,
-            0.868376,
-            0.868397667,
-            0.868451
+            0.868450333	,
+            0.868538167,
+            0.868428667,
+            0.868372167,
+            0.868434,
+            0.868450333
         ]
 
         self.lons = [
-            104.4592673,
-            104.4594323,
-            104.4595317,
-            104.4595205,
-            104.4594692,
-            104.4593845,
-            104.4592673
+            104.4592288,
+            104.4593953,
+            104.4594832,
+            104.459415,
+            104.4592793,
+            104.4592288
         ]
         
         self.form = None
@@ -129,7 +127,7 @@ class myMqtt:
 
         # servo_angle = 90 - output
         # servo_angle = max(0, min(servo_angle, 180))
-        if distance < 2:
+        if distance < 5:
             self.counter += (1 if self.counter + 1 <= len(self.lats) else 0)
             if self.form is not None : self.form.counter_value.set(str(self.counter))
 
