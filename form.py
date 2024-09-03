@@ -159,16 +159,16 @@ class VideoMonitorApp(tk.Tk):
         self.update_counter_button.grid(row=8, column=0, padx=5, pady=5, sticky="e", columnspan=2)
         
         self.update_position_button = tk.Button(self.control_frame, text="Counter Min", command=self.update_counter_min)
-        self.update_position_button.grid(row=8, column=3, padx=5, pady=5, sticky="w")
+        self.update_position_button.grid(row=8, column=2, padx=5, pady=5, sticky="w")
         
         self.upspeed = tk.Button(self.control_frame, text="Speed Up", command=self.speedUp)
-        self.upspeed.grid(row=9, column=3, padx=5, pady=5, sticky="w")
+        self.upspeed.grid(row=9, column=2, padx=5, pady=5, sticky="w")
         
         self.downspeed = tk.Button(self.control_frame, text="Speed Down", command=self.speedDown)
-        self.downspeed.grid(row=9, column=1, padx=5, pady=5, sticky="e")
+        self.downspeed.grid(row=9, column=0, padx=5, pady=5, sticky="e")
         
         self.motor_set = tk.Button(self.control_frame, text="Motor Set", command=self.setMotor)
-        self.motor_set.grid(row=8, column=4, padx=5, pady=5, sticky="w")
+        self.motor_set.grid(row=8, column=3, padx=5, pady=5, sticky="w")
         
         #Informasi lat dan long
         self.infLabel = tk.Label(self.control_frame, text="Nilai Lat & Long:")

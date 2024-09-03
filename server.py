@@ -14,6 +14,7 @@ import mqtt_test
 import json
 
 import form 
+import time
 import socketio
 import asyncio
 import pathlib
@@ -128,6 +129,7 @@ async def run(
     # Dataloader
 
     bs = 1  # batch_size
+    curTime = time.time()
  
     view_img = check_imshow(warn=True)
     dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride, form=form)
@@ -234,7 +236,8 @@ async def run(
                            targetAngle = -50 if max(500-int(box[0]), 0) > prevX else targetAngle
                     print( (int(box[0]), int(box[1])), (int(box[2]), int(box[3])))
             
-            if prevAngle is not targetAngle : 
+            if prevAngle is not targetAngle and mode==0 and (curTime - time.time()) > 0.1:
+                curTime = time.time() 
                 mqtt_test.mymqtt.mqttc.publish("data/addAngle",json.dumps({
                     "addAngle" : targetAngle
                 }))
@@ -311,9 +314,9 @@ async def inference1():
     
 async def inference2():
     global form
-    asyncio.create_task(run(idx=2,source="http://192.168.1.4:4747/video"))
+    # asyncio.create_task(run(idx=2,source="http://192.168.1.4:4747/video"))
 
-    # asyncio.create_task(run(idx=2,source="http://192.168.1.5:8081/?action=stream"))
+    asyncio.create_task(run(idx=2,source="http://192.168.1.5:8081/?action=stream"))
     
 async def inference3():
     global form
