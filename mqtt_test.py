@@ -138,6 +138,9 @@ class myMqtt:
             "adjHeading": adj_heading,
             "adjAzm": adj_azimuth,
             "setpoint": self.setpoint,
+            "counter": self.counter,
+            "lat2" : self.lats[self.counter-1],
+            "long2" : self.lons[self.counter-1],
             "motor" : self.motor,
             "speed" : self.speed if self.counter < 6 else 1550
         })
