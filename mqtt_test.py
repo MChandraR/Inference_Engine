@@ -9,21 +9,25 @@ class myMqtt:
     def __init__(self) -> None:
         self.counter = 1
         self.lats = [
-            0.868450333	,
-            0.868538167,
-            0.868428667,
-            0.868372167,
-            0.868434,
-            0.868450333
+            0.868494333	,
+            0.868554667,
+            0.868633833,
+            0.868603667,
+            0.868470667,
+            0.868461667,
+            0.868508833,
+            0.868494333
         ]
 
         self.lons = [
-            104.4592288,
-            104.4593953,
-            104.4594832,
-            104.459415,
-            104.4592793,
-            104.4592288
+            104.4592513,
+            104.4593122,
+            104.4594317,
+            104.4594968,
+            104.459658,
+            104.4594705,
+            104.4593248,
+            104.4592513
         ]
         
         self.form = None
@@ -128,7 +132,7 @@ class myMqtt:
         # servo_angle = 90 - output
         # servo_angle = max(0, min(servo_angle, 180))
         if distance < 5:
-            self.counter += (1 if self.counter + 1 <= len(self.lats)+1 else 0)
+            self.counter += (1 if self.counter  <= len(self.lats)else 0)
             if self.form is not None : self.form.counter_value.set(str(self.counter))
 
         res =  json.dumps({
