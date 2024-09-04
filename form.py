@@ -161,6 +161,9 @@ class VideoMonitorApp(tk.Tk):
         self.update_position_button = tk.Button(self.control_frame, text="Counter Min", command=self.update_counter_min)
         self.update_position_button.grid(row=8, column=2, padx=5, pady=5, sticky="w")
         
+        self.inverse = tk.Button(self.control_frame, text="Inverse", command=self.inverse)
+        self.inverse.grid(row=8, column=3, padx=5, pady=5, sticky="w")
+        
         self.upspeed = tk.Button(self.control_frame, text="Speed Up", command=self.speedUp)
         self.upspeed.grid(row=9, column=2, padx=5, pady=5, sticky="w")
         
@@ -168,7 +171,7 @@ class VideoMonitorApp(tk.Tk):
         self.downspeed.grid(row=9, column=0, padx=5, pady=5, sticky="e")
         
         self.motor_set = tk.Button(self.control_frame, text="Motor Set", command=self.setMotor)
-        self.motor_set.grid(row=8, column=3, padx=5, pady=5, sticky="w")
+        self.motor_set.grid(row=9, column=3, padx=5, pady=5, sticky="w")
         
         #Informasi lat dan long
         self.infLabel = tk.Label(self.control_frame, text="Nilai Lat & Long:")
@@ -245,6 +248,12 @@ class VideoMonitorApp(tk.Tk):
         self.arahValue.set("[ 0 | 0 ]")
         self.arahField = tk.Label(self.control_frame, textvariable=self.arahValue)
         self.arahField.grid(row=7, column=0, padx=5, pady=5, sticky="w")
+        
+        self.invValue = StringVar()
+        self.inValue.set("[ 0 | 0 ]")
+        self.invField = tk.Label(self.control_frame, textvariable=self.invValue)
+        self.invField.grid(row=7, column=3, padx=5, pady=5, sticky="w")
+        
         #tambahan
         self.detail_frames = tk.Frame(self, bg="white", width=10, height=10)
         self.detail_frames.grid(row=2, column=0,columnspan=2, padx=10, pady=10, sticky="nsew")
@@ -280,6 +289,11 @@ class VideoMonitorApp(tk.Tk):
     def speedDown(self):
         if self.mqtt is not None:
             self.mqtt.speed -= 10
+    def inverse(self):
+        if self.mqtt is not None:
+            self.mqtt.inv = 0 if self.mqtt.inv == 1 else 1
+            self.invValue.set(str(self.mqtt.inv))
+            
         
     def updateLatLon(self):
         try:

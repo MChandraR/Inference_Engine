@@ -190,6 +190,8 @@ async def run(
             pilot = "MANUAL"
             sizeRed = 0
             sizeGreen = 0
+            size = {}
+            inv = 0
             if len(det):
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
@@ -221,18 +223,19 @@ async def run(
                         save_one_box(xyxy, imc, file=save_dir / "crops" / names[c] / f"{p.stem}.jpg", BGR=True)
                     box = xyxy
                     
+                    inValue = mqtt_test.mymqtt.inv
                        
                     if pilot == "MANUAL" : 
                         pilot = "AUTO" if (abs(int(box[0]) - int(box[2])) > 40) else "MANUAL"
                         if (int(box[0]) - int(box[2]) > 50) : print("GACOR")
-                    if mode == 0 and names[c] == "green_buoy" and pilot == "AUTO":
-                        if int(box[2] ) > 200 and abs(int(box[0]) - int(box[2])) > sizeGreen : 
-                           sizeGreen = abs(int(box[0]) - int(box[2]))
+                    if mode == 0 and names[c] == ("green_buoy" if  inValue == 0 else "red_buoy") and pilot == "AUTO":
+                        if int(box[2] ) > 200 and abs(int(box[0]) - int(box[2])) > size[("green_buoy" if  inValue == 0 else "red_buoy")] : 
+                           size[("green_buoy" if  inValue == 0 else "red_buoy")] = abs(int(box[0]) - int(box[2]))
                            prevX = max(0, int(box[2] ) - 200)
                            targetAngle = -45
-                    if mode == 0 and names[c] == "red_buoy" and pilot == "AUTO":
-                        if int(box[0] ) < 440 and abs(abs(int(box[0]) - int(box[2]))) > sizeRed: 
-                           sizeRed = abs(int(box[0]) - int(box[2]))
+                    if mode == 0 and names[c] == ("green_buoy" if  inValue == 1 else "red_buoy") and pilot == "AUTO":
+                        if int(box[0] ) < 440 and abs(abs(int(box[0]) - int(box[2]))) > size[("green_buoy" if  inValue == 1 else "red_buoy")]: 
+                           size[("green_buoy" if  inValue == 1 else "red_buoy")] = abs(int(box[0]) - int(box[2]))
                            targetAngle = 45 if max(500-int(box[0]), 0) > prevX else targetAngle
                     print( (int(box[0]), int(box[1])), (int(box[2]), int(box[3])))
             
