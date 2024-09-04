@@ -36,6 +36,7 @@ class myMqtt:
         self.Kp = 1.0
         self.Ki = 0.0
         self.Kd = 0.1
+        self.inv = 0
         self.radius = 1
 
         self.setpoint = 0

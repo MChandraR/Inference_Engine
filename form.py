@@ -250,7 +250,7 @@ class VideoMonitorApp(tk.Tk):
         self.arahField.grid(row=7, column=0, padx=5, pady=5, sticky="w")
         
         self.invValue = StringVar()
-        self.inValue.set("[ 0 | 0 ]")
+        self.invValue.set("[ 0 | 0 ]")
         self.invField = tk.Label(self.control_frame, textvariable=self.invValue)
         self.invField.grid(row=7, column=3, padx=5, pady=5, sticky="w")
         
@@ -289,6 +289,7 @@ class VideoMonitorApp(tk.Tk):
     def speedDown(self):
         if self.mqtt is not None:
             self.mqtt.speed -= 10
+            
     def inverse(self):
         if self.mqtt is not None:
             self.mqtt.inv = 0 if self.mqtt.inv == 1 else 1
