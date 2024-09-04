@@ -225,15 +225,15 @@ async def run(
                     if pilot == "MANUAL" : 
                         pilot = "AUTO" if (abs(int(box[0]) - int(box[2])) > 40) else "MANUAL"
                         if (int(box[0]) - int(box[2]) > 50) : print("GACOR")
-                    if mode == 0 and names[c] == "red_buoy" and pilot == "AUTO":
-                        if int(box[2] ) > 200 and abs(int(box[0]) - int(box[2])) > sizeRed : 
-                           sizeRed = abs(int(box[0]) - int(box[2]))
-                           prevX = max(0, int(box[2] ) - 200)
-                           targetAngle = 45
                     if mode == 0 and names[c] == "green_buoy" and pilot == "AUTO":
-                        if int(box[0] ) < 440 and abs(abs(int(box[0]) - int(box[2]))) > sizeGreen: 
+                        if int(box[2] ) > 200 and abs(int(box[0]) - int(box[2])) > sizeGreen : 
                            sizeGreen = abs(int(box[0]) - int(box[2]))
-                           targetAngle = -50 if max(500-int(box[0]), 0) > prevX else targetAngle
+                           prevX = max(0, int(box[2] ) - 200)
+                           targetAngle = -45
+                    if mode == 0 and names[c] == "red_buoy" and pilot == "AUTO":
+                        if int(box[0] ) < 440 and abs(abs(int(box[0]) - int(box[2]))) > sizeRed: 
+                           sizeRed = abs(int(box[0]) - int(box[2]))
+                           targetAngle = 45 if max(500-int(box[0]), 0) > prevX else targetAngle
                     print( (int(box[0]), int(box[1])), (int(box[2]), int(box[3])))
             
             if prevAngle is not targetAngle and mode==0 and abs(curTime - time.time()) > 0.1:
