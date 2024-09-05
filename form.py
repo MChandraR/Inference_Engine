@@ -4,6 +4,7 @@ from PIL import ImageTk, Image
 from tkinter import StringVar
 import time
 from threading import Thread
+import json
 
 import cv2
 class VideoMonitorApp(tk.Tk):
@@ -328,11 +329,16 @@ class VideoMonitorApp(tk.Tk):
     
     def update_counter_plus(self):
         self.mqtt.counter +=1
+        self.mqtt.sendPub()
         self.counter_value.set(str(self.mqtt.counter))
+        if self.mqtt is not None:
+            self.mqtt.mqttc.publish("data/setCounter", json.dumps({"value" : 1}))
         
     def update_counter_min(self):
         self.mqtt.counter -=1
         self.counter_value.set(str(self.mqtt.counter))
+        if self.mqtt is not None:
+            self.mqtt.mqttc.publish("data/setCounter", json.dumps({"value" : -1}))
 
     def update_position(self):
         self.x_position += 10

@@ -88,8 +88,15 @@ class myMqtt:
 
     def on_connect(self, mqttc, obj, reason_code, properties):
         mqttc.subscribe("sensor/data", 0)
-        print("Connected to %s:%s" % (mqttc._host, mqttc._port))
         mqttc.publish("data/setPoints", json.dumps({
+            "lats" : self.lats,
+            "longs" : self.lons,
+            "counter" : self.counter
+        }))
+        print("Connected to %s:%s" % (mqttc._host, mqttc._port))
+    
+    def sendPub(self):
+        self.mqttc.publish("data/setPoints", json.dumps({
             "lats" : self.lats,
             "longs" : self.lons,
             "counter" : self.counter
@@ -178,7 +185,7 @@ class myMqtt:
 mymqtt = myMqtt()
 async def mqtt():
     mqttc = mymqtt.mqttc
-    mqttc.connect_async("192.168.1.4", 1883)
+    mqttc.connect_async("192.168.1.105", 1883)
     mqttc.subscribe("sensor/data", 0)
     thread = threading.Thread(target=mqttc.loop_forever)
     thread.start()

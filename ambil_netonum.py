@@ -1,0 +1,17 @@
+import requests
+import time
+
+url = "https://sipa.umrah.ac.id/backend/lirs/add_new"  
+counter = 0
+headers = {
+    "Cookie": "X_SESSION_MANAGER=gLNS1Jf9bZxxWTxn5ZIR7ZKFpIVWdsL1epmJxBdj; X_SESSION_SIPA=eyJpdiI6InlsZmF6UTRJNjNpajUvd2hDN2pEc0E9PSIsInZhbHVlIjoiSEJoRXNyeU1QM2ZFM0JEWkF1TU02SUh4cnlMT1VyL2RkVFR6eVFGaFRQWThtNzBPKyszYVIwWFIyWXY2bTlyYyIsIm1hYyI6IjJjZDNmZmExZTQ0NDgyOWFkY2VjZTZhMGJhMmM4ODU0MjE0ZTNmYzk5NGRjOWIyMWVjNGJjNTk4NDQ0Y2IwNGEiLCJ0YWciOiIifQ%3D%3D; X_REFRESH_SIPA=eyJpdiI6InFtdmpvMXRyaER0cFkwTXhBamltanc9PSIsInZhbHVlIjoianZFZWgrNGhVaHhRMVlWU1hac3VndTI4VEtHTCtQZmlPQ0JEeEtCR0FxSlBoS3p0cWtZcTBvYWxCQmswL01DUSIsIm1hYyI6IjRkOTNlMDhhZDMzMzQzNGUwMThhODYxZGM1ZDFkNjgwZGM3NDhjNjUxMDZjNzkzYTA1OTU3OGFiNzhiYTIyZmMiLCJ0YWciOiIifQ%3D%3D; X-LOCAL-DATA-SIPA=eyJpdiI6Imk5ZFY4NTcyeTNoL0Z2Uk5ZczBHRnc9PSIsInZhbHVlIjoiWTJ3dEUrb0t3VU1SbUQzVm1yT0lzc2h2KzRDT0phTm5naHVNVnVob1pSbXViNzY1RGJteWdRM3c5Z0g3Wmg5eDczRnp1cllIdjBLNytqVnNSdk9wU09lU0JtVW9CdmF6RzQrOGtHdkhkMFBQWnkvVEdJUEVNUm5MOWphQmlPZmMvR3BKc1hUUDFBVVZVNys3ZHppNDdzZ0MrSWY3R2Z5emxuYURqcHJYaWRuTDlXMWozcmdtYmVzdDBnTVR4ZXlQL3VrU3FCQmRjRjhQRUFvSkdUaFlCMnQvQnpoYTIzZjlQeXpsbzVwM1cwdDJlRldBK25yblh0ekpMcGhpYW5rMiIsIm1hYyI6IjcwZmI5ZTBjMmY0ZTA5OGZhYjYzZjMzZWI2Y2I0NjkyNDczNjU4YzdjZDU5YmEwNTQ3Yzk3NDY0ZTVjZjA5NDEiLCJ0YWciOiIifQ%3D%3D; X-SESSION-ID=a5wLR55f7UFuyuz84vEzlg0BOCOxv4jbfcYgXnah"
+}
+
+while True:
+    counter += 1
+    response = requests.post(url,data={"id_kurikulum_matkul": 48500, "id_jadwal": 52288}
+    ,headers=headers)
+
+    print(f"{counter} ) Status Code: {response.status_code}")
+    print("Response Text:", response.text)
+    time.sleep(1)
