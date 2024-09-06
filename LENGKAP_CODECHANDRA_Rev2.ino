@@ -90,8 +90,8 @@ void callback(char* topic, byte* payload, unsigned int length) { //perintah untu
   for (int i = 0; i < length; i++) {
     jsonData += (char)payload[i];
   }
-  if (String(topic) == "data/setPoints")Serial.println(jsonData);
-  StaticJsonDocument<200> doc;
+  Serial.println(jsonData);
+  DynamicJsonDocument doc(2048);
   DeserializationError error = deserializeJson(doc, jsonData);
   if (error) {
     Serial.print(F("deserializeJson() failed: "));
@@ -102,31 +102,31 @@ void callback(char* topic, byte* payload, unsigned int length) { //perintah untu
   if (String(topic) == "data/addAngle") addAngle = doc["addAngle"]; 
   if (String(topic) == "data/setCounter"){
     int value = doc["value"];
-    counter += value;
+    counter  = (lats.size() + value) % lats.size() ;
   }
-  if (String(topic) == "data/setPoints"){
-    if(lats.size()) lats.clear();
-    if(longs.size()) longs.clear();
+  if (String(topic) == "data/setLats"){
     JsonArray latArray = doc["lats"].as<JsonArray>();
-    JsonArray longArray = doc["longs"].as<JsonArray>();
     counter = doc["counter"];
 
       for (JsonVariant v : latArray) {
         lats.push_back(v.as<double>());
       }
-
-      for (JsonVariant v : longArray) {
-        longs.push_back(v.as<double>());
-      } 
-      for(double lon : longs){
-        Serial.print("Long : ");
-        Serial.println(lon, 8);
-      }Serial.println("=======================");
       for(double lat : lats){
         Serial.print("Lat : ");
         Serial.println(lat, 8);
       }
-      client.publish("data/confirm", "confirmed");
+  }
+  if (String(topic) == "data/setLongs"){
+    JsonArray longArray = doc["longs"].as<JsonArray>();
+
+      for (JsonVariant v : longArray) {
+        longs.push_back(v.as<double>());
+      }
+      for(double lon : longs){
+        Serial.print("Long : ");
+        Serial.println(lon, 8);
+      }Serial.println("=======================");
+
   }
    if (String(topic) == "data/result") {
     // float distance = doc["distance"];  // Contoh key "heading"
@@ -152,7 +152,8 @@ void reconnect() {
       Serial.println("Connected");
       client.subscribe("data/result");
       client.subscribe("data/addAngle");
-      client.subscribe("data/setPoints");
+      client.subscribe("data/setLats");
+      client.subscribe("data/setLongs");
       client.subscribe("data/setCounter");
 
     } else {
@@ -243,7 +244,7 @@ void loop() {
   
   while (ss.available() > 0 )
     if (gps.encode(ss.read()) )
-      if (gps.location.isValid() ) {
+      if (gps.location.isValid()) {
         if (!client.connected()) {
           reconnect();
         } client.loop();
@@ -280,9 +281,11 @@ void loop() {
         doc["latDirection"] = latDirection;
         doc["lon"] = lon1;
         doc["lonDirection"] = lonDirection;
-        doc["azimut"] = adjustedAzimuth;
+        doc["adjAzimut"] = adjustedAzimuth;
+        doc["adjHeading"] = adjustedHeading;
         doc["distance"] = distance;
         doc["counter"] = counter;
+        doc["speed"] = speed;
 
        
 
@@ -318,7 +321,7 @@ void loop() {
         client.publish("sensor/data", jsonBuffer);
         delay(100);
 
-        if(distance > 2.5){
+        if(distance < 2.5){
           counter += ( counter+1 < lats.size() ? 1 :  0);
         }
         Serial.println("After distance..");
