@@ -9,33 +9,31 @@ class myMqtt:
     def __init__(self) -> None:
         self.counter = 1
         self.lats = [
-            0.868477,
-            0.868484833,
-            0.868574167,
-            0.8685755,
-            0.868575167,
-            0.868526333,
-            0.868492167,
-            0.868450333,
-            0.868434333,
-            0.8684175,
-            0.868390833,
-            0.868477
+            0.868524333,
+            0.868578667,
+            0.868616833,
+            0.868610167,
+            0.868549833,
+            0.868518167,
+            0.868464667,
+            0.868463167,
+            0.868422667,
+            0.868390333,
+            0.868524333
         ]
 
         self.lons = [
-            104.459256,
-            104.4592995,
-            104.4594042,
-            104.4594662,
-            104.45949,
-            104.4594903,
-            104.4595087,
-            104.4595625,
-            104.4595275,
-            104.4595117,
-            104.4594582,
-            104.459256
+            104.4593363,
+            104.459376,
+            104.4594355,
+            104.4594772,
+            104.4594645,
+            104.4595262,
+            104.4595805,
+            104.4595837,
+            104.459493,
+            104.459449,
+            104.4593363
         ]
         
         self.form = None
@@ -88,18 +86,15 @@ class myMqtt:
 
     def on_connect(self, mqttc, obj, reason_code, properties):
         mqttc.subscribe("sensor/data", 0)
-        mqttc.publish("data/setPoints", json.dumps({
-            "lats" : self.lats,
-            "longs" : self.lons,
-            "counter" : self.counter
-        }))
+        self.sendPub()
         print("Connected to %s:%s" % (mqttc._host, mqttc._port))
     
     def sendPub(self):
-        self.mqttc.publish("data/setPoints", json.dumps({
-            "lats" : self.lats,
-            "longs" : self.lons,
-            "counter" : self.counter
+        self.mqttc.publish("data/setLats", json.dumps({
+            "lats" : self.lats
+        }))
+        self.mqttc.publish("data/setLongs", json.dumps({
+            "longs" : self.lons
         }))
 
     def on_message(self, mqttc, obj, msg):
@@ -108,7 +103,7 @@ class myMqtt:
 
         lat = data['lat']
         lon = data['lon']
-        azimuth = data['azimut']
+        azimuth = data['adjAzimut']
 
         distance = self.calculate_distance(lat, lon, self.lats[self.counter-1], self.lons[self.counter-1])
         heading = self.calculate_heading(lat, lon, self.lats[self.counter-1], self.lons[self.counter-1])
@@ -157,18 +152,12 @@ class myMqtt:
             if self.form is not None : self.form.counter_value.set(str(self.counter))
 
         res =  json.dumps({
-            "distance": distance,
-            "adjHeading": adj_heading,
-            "adjAzm": adj_azimuth,
-            "setpoint": self.setpoint,
-            "counter": self.counter,
-            "lat2" : self.lats[self.counter-1],
-            "long2" : self.lons[self.counter-1],
             "motor" : self.motor,
             "speed" : self.speed if self.counter < len(self.lats) else 1550
         })
         if self.form is not None: self.form.log_res.set(str(res))
-        mqttc.publish("data/result",res)
+        self.mqttc.publish("data/result", res)
+  
             
 
     def on_subscribe(self, mqttc, obj, mid, reason_code_list):

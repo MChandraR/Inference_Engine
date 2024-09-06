@@ -323,22 +323,24 @@ class VideoMonitorApp(tk.Tk):
         label.imgtk = imgtk
     
     def setMotor(self):
+        self.mqtt.counter - 1
+        # self.mqtt.sendPub()
+
         self.motor = 1 if self.motor == 0 else 0
         self.arahValue.set("Motor hidup" if self.motor ==1 else "Motor Mati")
         if self.mqtt is not None: self.mqtt.motor = self.motor
     
     def update_counter_plus(self):
         self.mqtt.counter +=1
-        self.mqtt.sendPub()
         self.counter_value.set(str(self.mqtt.counter))
         if self.mqtt is not None:
-            self.mqtt.mqttc.publish("data/setCounter", json.dumps({"value" : 1}))
+            self.mqtt.mqttc.publish("data/setCounter", json.dumps({"value" : self.mqtt.counter - 1}))
         
     def update_counter_min(self):
         self.mqtt.counter -=1
         self.counter_value.set(str(self.mqtt.counter))
         if self.mqtt is not None:
-            self.mqtt.mqttc.publish("data/setCounter", json.dumps({"value" : -1}))
+            self.mqtt.mqttc.publish("data/setCounter", json.dumps({"value" :self.mqtt.counter - 1 }))
 
     def update_position(self):
         self.x_position += 10
