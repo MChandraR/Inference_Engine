@@ -226,7 +226,7 @@ async def run(
                     inValue = mqtt_test.mymqtt.inv
                        
                     if pilot == "MANUAL" : 
-                        pilot = "AUTO" if (abs(int(box[0]) - int(box[2])) > 35) else "MANUAL"
+                        pilot = "AUTO" if (abs(int(box[0]) - int(box[2])) > 25) else "MANUAL"
                         if (int(box[0]) - int(box[2]) > 50) : print("GACOR")
                     if mode == 0 and names[c] == ("green_buoy" if  inValue == 0 else "red_buoy") and pilot == "AUTO":
                         if int(box[2] ) > 200 and abs(int(box[0]) - int(box[2])) > size[("green_buoy" if  inValue == 0 else "red_buoy")] : 
