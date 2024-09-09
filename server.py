@@ -91,7 +91,7 @@ device = select_device("")
 model = DetectMultiBackend(weights=weights, device=device, dnn=False, data=data, fp16=False)
     
 @smart_inference_mode()
-async def run(
+def run(
     idx,
     mode = 0,
     weights=ROOT / "exp5/weights/best.pt",  # model path or triton URL
@@ -315,35 +315,22 @@ async def mains():
         
 async def inference1():
     global form
-    try:
-        asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.5:8081/?action=stream"))
-        # asyncio.create_task(run(idx=1,source="http://10.24.0.60:4747/video"))
-    except Exception as e:
-        print(e)
-    
+    asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.5:8081/?action=stream"))
+   
 async def inference2():
     global form
-    # asyncio.create_task(run(idx=2,source="http://192.168.1.4:4747/video"))
-
     asyncio.create_task(run(idx=2,source="http://192.168.1.5:8080/?action=stream"))
     
 async def inference3():
     global form
     asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.3:8080/?action=stream"))
 
-
-
-# if __name__ == "__main__":
-#     # thread = Thread(target=run2)
-#     # thread.start()
-#     # run()
-#     # thread.join()
 def start1():
-    asyncio.run(inference1())
+    run(idx=1, mode=1,source="http://192.168.1.5:4747/video")
 def start2():   
-    asyncio.run(inference2())
+    run(idx=2,source="http://192.168.1.5:8080/?action=stream")
 def start3():   
-    asyncio.run(inference3())
+    run(idx=3,mode=1,source="http://192.168.1.3:8080/?action=stream")
     
 def startServer():
     app.run(host='localhost', port=5000)
