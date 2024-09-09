@@ -172,7 +172,9 @@ class myMqtt:
 
 
 mymqtt = myMqtt()
+thread = None
 async def mqtt():
+    global thread
     mqttc = mymqtt.mqttc
     mqttc.connect_async("192.168.1.105", 1883)
     mqttc.subscribe("sensor/data", 0)

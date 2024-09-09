@@ -18,11 +18,12 @@ import time
 import socketio
 import asyncio
 import pathlib
+from flask import Flask, Request, Response, jsonify
 temp = pathlib.PosixPath
 pathlib.PosixPath = pathlib.WindowsPath
 
 sio = socketio.AsyncClient()
-
+app = Flask(__name__)
 @sio.event
 async def connect():
     print('connection established')
@@ -30,6 +31,11 @@ async def connect():
 @sio.event
 async def disconnect():
     print('disconnected from server')
+@app.route('/data')
+def data():
+    return jsonify({
+        "data" : None
+    })
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
@@ -333,27 +339,27 @@ async def inference3():
 #     # run()
 #     # thread.join()
 def start1():
-    try:
-        asyncio.run(inference1())
-    except Exception as e:
-        print(e)
+    asyncio.run(inference1())
 def start2():   
     asyncio.run(inference2())
 def start3():   
     asyncio.run(inference3())
+    
+def startServer():
+    app.run(host='localhost', port=5000)
 
 formThread = Thread(target=form.launchApp, args=(mqtt_test.mymqtt,))
 inf1 = Thread(target=start1)
 inf2 = Thread(target=start2)
 inf3 = Thread(target=start3)
+serverThread = Thread(target=startServer)
 formThread.start()
 inf1.start()
 inf2.start()
 inf3.start()
+serverThread.start()
 formThread.join()
-try:
-    inf1.join()
-except Exception as e:
-    print(e) 
+inf1.join()
 inf2.join(0)
 inf3.join(0)
+serverThread.join()
