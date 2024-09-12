@@ -44,6 +44,12 @@ class myMqtt:
         self.Kd = 0.1
         self.inv = 0
         self.radius = 1
+        self.lat = 0
+        self.lon = 0
+        self.azm = 0
+        self.speed = 0
+        self.latDir = 0
+        self.lonDir = 0
 
         self.setpoint = 0
         self.motor = 0
@@ -101,12 +107,12 @@ class myMqtt:
         data = json.loads(msg.payload.decode())
         print(data)
 
-        lat = data['lat']
-        lon = data['lon']
-        azimuth = data['adjAzimut']
-
-        distance = self.calculate_distance(lat, lon, self.lats[self.counter-1], self.lons[self.counter-1])
-        heading = self.calculate_heading(lat, lon, self.lats[self.counter-1], self.lons[self.counter-1])
+        self.lat = data['lat']
+        self.lon = data['lon']
+        self.azimuth = data['adjAzimut']
+        self.speed = data['speed']
+        self.latDir = data['latDirection']
+        self.lonDir = data['lonDirection']
 
         if self.form is not None:
             self.form.log_value.set(  ("\n" + str(data)))
@@ -124,33 +130,8 @@ class myMqtt:
             self.form.lat5Value.set(str(self.lats[4]))
             self.form.lat6Value.set(str(self.lats[5]))
             
-        adj_azimuth = (azimuth + 360) % 360
-        adj_heading = adj_azimuth - heading
-        if adj_heading < 0:
-            adj_heading += 360
-
-        self.inputs = adj_heading
-        error = self.setpoint - self.inputs
-        if error > 180: 
-            error -= 360
-        elif error < -180:
-            error += 360
-
-        current_time = 10
-        # dt = current_time - self.previous_time
-        # self.integral += error * dt
-        # derivative = (error - self.previous_error) / dt
-
-        # output = self.Kp * error + self.Ki * self.integral + self.Kd * derivative
-        # self.previous_error = error
-        # self.previous_time = current_time
-
-        # servo_angle = 90 - output
-        # servo_angle = max(0, min(servo_angle, 180))
-        if distance < 2.3:
-            self.counter += (1 if self.counter  <= len(self.lats)else 0)
-            if self.form is not None : self.form.counter_value.set(str(self.counter))
-
+    
+        
         res =  json.dumps({
             "motor" : self.motor,
             "speed" : self.speed if self.counter < len(self.lats) else 1550

@@ -18,12 +18,17 @@ import time
 import socketio
 import asyncio
 import pathlib
+from datetime import datetime
 from flask import Flask, Request, Response, jsonify
 temp = pathlib.PosixPath
 pathlib.PosixPath = pathlib.WindowsPath
 
 sio = socketio.AsyncClient()
 app = Flask(__name__)
+dataKapal = {}
+date = datetime.today().strftime('%Y-%m-%d')
+days = ["Sun", "Mon", "Thus", "Wed", "Thurs", "Fri", "Sat"]
+day = days[datetime.today().weekday()%len(days)]
 @sio.event
 async def connect():
     print('connection established')
@@ -31,11 +36,51 @@ async def connect():
 @sio.event
 async def disconnect():
     print('disconnected from server')
+    
 @app.route('/data')
 def data():
-    return jsonify({
-        "data" : None
-    })
+    data = {}
+    if mqtt_test.mymqtt is not None:
+        data = {
+            "hdg" : "249",
+            "sog" : mqtt_test.mymqtt.speed,
+            "cog" : 251,
+            "day" : day,
+            "date" : date,
+            "gps" : f"{mqtt_test.mymqtt.latDir} {mqtt_test.mymqtt.lat} {mqtt_test.mymqtt.lonDir} {mqtt_test.mymqtt.lon}"
+        }
+    return jsonify(data)
+    
+frame1 = [None, None, None]
+
+
+def generate_frames(idx):
+    global frame1
+    while True:
+        if frame1[idx] is not None:
+            # Mengonversi frame dari BGR (OpenCV) ke format JPEG
+            ret, buffer = cv2.imencode('.jpg', frame1[idx])
+            frame = buffer.tobytes()
+
+            # Mengirim frame dengan format multipart
+            yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+    
+
+
+@app.route('/cam1')
+def cam1():
+    return Response(generate_frames(1),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/cam2')
+def cam2():
+    return Response(generate_frames(2),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+@app.route('/cam3')
+def cam3():
+    return Response(generate_frames(3),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
@@ -91,7 +136,7 @@ device = select_device("")
 model = DetectMultiBackend(weights=weights, device=device, dnn=False, data=data, fp16=False)
     
 @smart_inference_mode()
-def run(
+async def run(
     idx,
     mode = 0,
     weights=ROOT / "exp5/weights/best.pt",  # model path or triton URL
@@ -123,7 +168,7 @@ def run(
     dnn=False,  # use OpenCV DNN for ONNX inference
     vid_stride=1,  # video frame-rate stride
 ):
-    global model
+    global model, frame1
     # Directories
     save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
     (save_dir / "labels" if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
@@ -272,7 +317,7 @@ def run(
 
                     if mode == 0 :cv2.putText(im0,pilot, (20,50), 0, 2, (255,0,0) , thickness=2, lineType=cv2.LINE_AA)
 
-
+                    frame1[idx] = im0   
                     form.app.display_frame(frames,im0)
 
             # Save results (image with detections)
@@ -315,28 +360,31 @@ async def mains():
         
 async def inference1():
     global form
-    asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.5:8081/?action=stream"))
+    asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.5:4747/video"))
    
 async def inference2():
     global form
-    asyncio.create_task(run(idx=2,source="http://192.168.1.5:8080/?action=stream"))
+    asyncio.create_task(run(idx=2,source="http://10.25.0.8:4747/video"))
     
 async def inference3():
     global form
     asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.3:8080/?action=stream"))
 
 def start1():
-    run(idx=1, mode=1,source="http://192.168.1.5:4747/video")
-def start2():   
-    run(idx=2,source="http://192.168.1.5:8080/?action=stream")
-def start3():   
+    asyncio.run(inference1())
+    # run(idx=1, mode=1,source="http://192.168.1.5:4747/video")
+def start2(): 
+    return  
+    run(idx=2,source="http://10.25.0.8:4747/video")
+def start3():  
+    return 
     run(idx=3,mode=1,source="http://192.168.1.3:8080/?action=stream")
     
 def startServer():
     app.run(host='localhost', port=5000)
 
 formThread = Thread(target=form.launchApp, args=(mqtt_test.mymqtt,))
-inf1 = Thread(target=start1)
+inf1 = Thread(target=start1, daemon=True)
 inf2 = Thread(target=start2)
 inf3 = Thread(target=start3)
 serverThread = Thread(target=startServer)
