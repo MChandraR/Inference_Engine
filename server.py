@@ -19,12 +19,14 @@ import socketio
 import asyncio
 import pathlib
 from datetime import datetime
+from flask_cors import CORS, cross_origin
 from flask import Flask, Request, Response, jsonify
 temp = pathlib.PosixPath
 pathlib.PosixPath = pathlib.WindowsPath
 
 sio = socketio.AsyncClient()
 app = Flask(__name__)
+CORS(app)
 dataKapal = {}
 date = datetime.today().strftime('%Y-%m-%d')
 days = ["Sun", "Mon", "Thus", "Wed", "Thurs", "Fri", "Sat"]
@@ -278,7 +280,6 @@ async def run(
                        
                     if pilot == "MANUAL" : 
                         pilot = "AUTO" if (abs(int(box[0]) - int(box[2])) > 25) else "MANUAL"
-                        if (int(box[0]) - int(box[2]) > 50) : print("GACOR")
                     if mode == 0 and names[c] == ("green_buoy" if  inValue == 0 else "red_buoy") and pilot == "AUTO":
                         if int(box[2] ) > 200 and abs(int(box[0]) - int(box[2])) > size[("green_buoy" if  inValue == 0 else "red_buoy")] : 
                            size[("green_buoy" if  inValue == 0 else "red_buoy")] = abs(int(box[0]) - int(box[2]))
@@ -360,28 +361,31 @@ async def mains():
         
 async def inference1():
     global form
-    asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.5:4747/video"))
+    asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.5:8081/?action=stream"))
    
 async def inference2():
     global form
-    asyncio.create_task(run(idx=2,source="http://10.25.0.8:4747/video"))
+    asyncio.create_task(run(idx=2,source="http://192.168.1.5:8080/?action=stream"))
     
 async def inference3():
     global form
-    asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.3:8080/?action=stream"))
+    asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.4:8080/?action=stream"))
 
 def start1():
     asyncio.run(inference1())
-    # run(idx=1, mode=1,source="http://192.168.1.5:4747/video")
+    #run(idx=1, mode=1,source="http://192.168.1.5:8080/?action=stream")
 def start2(): 
-    return  
-    run(idx=2,source="http://10.25.0.8:4747/video")
+    asyncio.run(inference2())
+
+    #run(idx=2,source="http://192.168.1.5:8081/?action=stream")
 def start3():  
-    return 
-    run(idx=3,mode=1,source="http://192.168.1.3:8080/?action=stream")
+    asyncio.run(inference3())
+
+    #run(idx=3,mode=1,source="http://192.168.1.4:8080/?action=stream")
     
 def startServer():
-    app.run(host='localhost', port=5000)
+    pass
+    #app.run(host='localhost', port=5000)
 
 formThread = Thread(target=form.launchApp, args=(mqtt_test.mymqtt,))
 inf1 = Thread(target=start1, daemon=True)

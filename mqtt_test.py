@@ -116,9 +116,9 @@ class myMqtt:
 
         if self.form is not None:
             self.form.log_value.set(  ("\n" + str(data)))
-            self.form.lat_value.set(lat)
-            self.form.coordinate_value.set(azimuth)
-            self.form.long_value.set(lon)
+            self.form.lat_value.set(self.lat)
+            self.form.coordinate_value.set(self.azimuth)
+            self.form.long_value.set(self.lon)
             self.form.ld_value.set(data['latDirection'])
             self.form.lgd_value.set(data['lonDirection'])
             self.form.lat2_value.set(str(self.lats[self.counter-1]))

@@ -118,12 +118,13 @@ L.marker([-7.2758471,112.7937557]).addTo(map)
 
 function fetchData(){
     $.ajax({
-        url: "localhost:5000/data",
+        url: "http://localhost:5000/data",
         method : "GET",
-        context: document.body
     }).done(function(e) {
         console.log(e);
     });
 }
+
+setInterval(fetchData, 1000);
 </script>
 </html>
