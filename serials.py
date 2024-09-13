@@ -12,7 +12,7 @@ time.sleep(2)  # Wait for the connection to initialize
 
 class myMqtt:
     def __init__(self) -> None:
-        self.ser = serial.Serial('COM4', 115200)  # Change 'COM3' to your ESP32's port
+        self.ser = serial.Serial('COM6', 9600)  # Change 'COM3' to your ESP32's port
         self.mqttc = mqtt.Client()
         self.mqttc.on_message = self.on_message
         self.mqttc.on_connect = self.on_connect
@@ -20,7 +20,7 @@ class myMqtt:
 
 
     def on_connect(self, mqttc, obj, reason_code, properties):
-        mqttc.subscribe("sensor/addAngle", 0)
+        mqttc.subscribe("data/addAngle", 0)
         print("Connected to %s:%s" % (mqttc._host, mqttc._port))
 
     def on_message(self, mqttc, obj, msg):
@@ -34,9 +34,9 @@ class myMqtt:
         #     while True: 
                 
         #         time.sleep(1)  # Wait for the connection to initialize
-        #         if ser.in_waiting > 0:  # Check if there is data waiting to be read
-        #             line = ser.readline().decode('utf-8').rstrip()
-        #             print(f"Received: {line}")
+        # if self.ser.in_waiting > 0:  # Check if there is data waiting to be read
+        #     line = self.ser.readline().decode('utf-8').rstrip()
+        #     print(f"Received: {line}")
         # except KeyboardInterrupt:
         #     print("Stopped.")
         # except Exception :
@@ -59,7 +59,7 @@ class myMqtt:
 mymqtt = myMqtt()
 
 mqttc = mymqtt.mqttc
-mqttc.connect_async("192.168.1.105", 1883)
+mqttc.connect_async("192.168.1.3", 1883)
 mqttc.subscribe("sensor/data", 0)
 mqttc.loop_forever()
 
