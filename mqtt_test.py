@@ -47,7 +47,7 @@ class myMqtt:
         self.lat = 0
         self.lon = 0
         self.azm = 0
-        self.speed = 0
+        self.speed = 1650
         self.latDir = 0
         self.lonDir = 0
 
@@ -110,7 +110,6 @@ class myMqtt:
         self.lat = data['lat']
         self.lon = data['lon']
         self.azimuth = data['adjAzimut']
-        self.speed = data['speed']
         self.latDir = data['latDirection']
         self.lonDir = data['lonDirection']
 
