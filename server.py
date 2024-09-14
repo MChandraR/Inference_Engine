@@ -53,7 +53,7 @@ def data():
         }
     return jsonify(data)
     
-frame1 = [None, None, None]
+frame1 = [None, None, None, None]
 
 
 def generate_frames(idx):
@@ -365,11 +365,11 @@ async def inference1():
    
 async def inference2():
     global form
-    asyncio.create_task(run(idx=2,source="http://192.168.1.4:4747/video"))
+    asyncio.create_task(run(idx=2,source="http://192.168.1.5:8080/?action=stream"))
     
 async def inference3():
     global form
-    asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.4:8080/?action=stream"))
+    asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.8:8080/?action=stream"))
 
 def start1():
     asyncio.run(inference1())
@@ -384,8 +384,7 @@ def start3():
     #run(idx=3,mode=1,source="http://192.168.1.4:8080/?action=stream")
     
 def startServer():
-    pass
-    #app.run(host='localhost', port=5000)
+    app.run(host='localhost', port=5000)
 
 formThread = Thread(target=form.launchApp, args=(mqtt_test.mymqtt,))
 inf1 = Thread(target=start1, daemon=True)
