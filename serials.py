@@ -12,7 +12,7 @@ time.sleep(2)  # Wait for the connection to initialize
 
 class myMqtt:
     def __init__(self) -> None:
-        self.ser = serial.Serial('COM6', 9600)  # Change 'COM3' to your ESP32's port
+        self.ser = serial.Serial('COM5', 9600)  # Change 'COM3' to your ESP32's port
         self.mqttc = mqtt.Client()
         self.mqttc.on_message = self.on_message
         self.mqttc.on_connect = self.on_connect
@@ -54,12 +54,16 @@ class myMqtt:
         
     def setForm(self, form):
         self.form = form
-
-
+ser = serial.Serial('COM5', 9600)
+while True:
+    print("Sending")
+    data = json.dumps({"servo" : 90})
+    ser.write(data.encode('utf-8'))
+    time.sleep(1)
 mymqtt = myMqtt()
 
 mqttc = mymqtt.mqttc
-mqttc.connect_async("192.168.1.3", 1883)
+mqttc.connect_async("192.168.1.105", 1883)
 mqttc.subscribe("sensor/data", 0)
 mqttc.loop_forever()
 
