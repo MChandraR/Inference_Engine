@@ -9,31 +9,25 @@ class myMqtt:
     def __init__(self) -> None:
         self.counter = 1
         self.lats = [
-            0.868524333,
-            0.868578667,
-            0.868616833,
-            0.868610167,
-            0.868549833,
-            0.868518167,
-            0.868464667,
-            0.868463167,
-            0.868422667,
-            0.868390333,
-            0.868524333
+            0.868491167,
+            0.868552667,
+            0.868569833,
+            0.868505333,
+            0.868465833,
+            0.868416833,
+            0.868409333,
+            0.868484333
         ]
 
         self.lons = [
-            104.4593363,
-            104.459376,
-            104.4594355,
-            104.4594772,
-            104.4594645,
-            104.4595262,
-            104.4595805,
-            104.4595837,
-            104.459493,
-            104.459449,
-            104.4593363
+            104.4592822,
+            104.459324,
+            104.459437,
+            104.4594323,
+            104.4594418,
+            104.4595032,
+            104.4594673,
+            104.4592832
         ]
         
         self.form = None
@@ -50,6 +44,9 @@ class myMqtt:
         self.speed = 1650
         self.latDir = 0
         self.lonDir = 0
+        self.sog = 0
+        self.cog = 0
+        self.azimuth = 0
 
         self.setpoint = 0
         self.motor = 0
@@ -112,6 +109,8 @@ class myMqtt:
         self.azimuth = data['adjAzimut']
         self.latDir = data['latDirection']
         self.lonDir = data['lonDirection']
+        self.sog = data['speed']
+        self.cob = data['adjHeading']
 
         if self.form is not None:
             self.form.log_value.set(  ("\n" + str(data)))
@@ -132,6 +131,9 @@ class myMqtt:
     
         
         res =  json.dumps({
+            "kp" : self.Kp,
+            "kd" : self.Kd,
+            "ki" : self.Ki,
             "motor" : self.motor,
             "speed" : self.speed if self.counter < len(self.lats) else 1550
         })

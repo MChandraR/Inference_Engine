@@ -28,7 +28,7 @@ sio = socketio.AsyncClient()
 app = Flask(__name__)
 CORS(app)
 dataKapal = {}
-date = datetime.today().strftime('%Y-%m-%d')
+date = datetime.today().strftime('%d/%m/%Y')
 days = ["Sun", "Mon", "Thus", "Wed", "Thurs", "Fri", "Sat"]
 day = days[datetime.today().weekday()%len(days)]
 @sio.event
@@ -44,12 +44,18 @@ def data():
     data = {}
     if mqtt_test.mymqtt is not None:
         data = {
-            "hdg" : "249",
-            "sog" : mqtt_test.mymqtt.speed,
-            "cog" : 251,
+            "hdg" : mqtt_test.mymqtt.azimuth,
+            "sog" : mqtt_test.mymqtt.sog,
+            "cog" : mqtt_test.mymqtt.cog,
             "day" : day,
             "date" : date,
-            "gps" : f"{mqtt_test.mymqtt.latDir} {mqtt_test.mymqtt.lat} {mqtt_test.mymqtt.lonDir} {mqtt_test.mymqtt.lon}"
+            "gps" : {
+                "lat" : mqtt_test.mymqtt.lat,
+                "latDir" : mqtt_test.mymqtt.latDir,
+                "long"  : mqtt_test.mymqtt.lon,
+                "lonDir" : mqtt_test.mymqtt.lonDir
+            }
+            # "gps" : f"{mqtt_test.mymqtt.latDir} {mqtt_test.mymqtt.lat} {mqtt_test.mymqtt.lonDir} {mqtt_test.mymqtt.lon}"
         }
     return jsonify(data)
     
@@ -284,11 +290,11 @@ async def run(
                         if int(box[2] ) > 200 and abs(int(box[0]) - int(box[2])) > size[("green_buoy" if  inValue == 0 else "red_buoy")] : 
                            size[("green_buoy" if  inValue == 0 else "red_buoy")] = abs(int(box[0]) - int(box[2]))
                            prevX = max(0, int(box[2] ) - 200)
-                           targetAngle = -45
+                           targetAngle = -60
                     if mode == 0 and names[c] == ("green_buoy" if  inValue == 1 else "red_buoy") and pilot == "AUTO":
                         if int(box[0] ) < 440 and abs(abs(int(box[0]) - int(box[2]))) > size[("green_buoy" if  inValue == 1 else "red_buoy")]: 
                            size[("green_buoy" if  inValue == 1 else "red_buoy")] = abs(int(box[0]) - int(box[2]))
-                           targetAngle = 45 if max(500-int(box[0]), 0) > prevX else targetAngle
+                           targetAngle = 60 if max(500-int(box[0]), 0) > prevX else targetAngle
                     print( (int(box[0]), int(box[1])), (int(box[2]), int(box[3])))
             
             if prevAngle is not targetAngle and mode==0 and abs(curTime - time.time()) > 0.1:
