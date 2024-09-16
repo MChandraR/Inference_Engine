@@ -35,4 +35,4 @@ app.get("/data", (req,res)=>{
     });
 });
 
-app.listen(3000,'192.168.1.105', ()=>{console.log("Listening");});
+app.listen(3000,'0.0.0.0', ()=>{console.log("Listening");});

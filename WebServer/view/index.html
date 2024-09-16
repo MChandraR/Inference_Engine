@@ -48,32 +48,32 @@
                             <tr>
                                 <td>HDG</td>
                                 <td>:</td>
-                                <td>249.0°</td>
+                                <td id="hdg">249.0°</td>
                             </tr>
                             <tr>
                                 <td>SOG</td>
                                 <td>:</td>
-                                <td>8.7 kn || 13.4 km/j</td>
+                                <td id="sog">8.7 kn || 13.4 km/j</td>
                             </tr>
                             <tr>
                                 <td>COG</td>
                                 <td>:</td>
-                                <td>251.6°</td>
+                                <td id="cog">251.6°</td>
                             </tr>
                             <tr>
                                 <td>DAY</td>
                                 <td>:</td>
-                                <td>SUN</td>
+                                <td id="day">SUN</td>
                             </tr>
                             <tr>
                                 <td>DATE</td>
                                 <td>:</td>
-                                <td>24/07/2024</td>
+                                <td id="date">24/07/2024</td>
                             </tr>
                             <tr>
                                 <td>GPS</td>
                                 <td>:</td>
-                                <td>S 3.56734 E 104.67235</td>
+                                <td id="gps">S 3.56734 E 104.67235</td>
                             </tr>
                         </table>
                     </dir>
@@ -100,6 +100,12 @@
     </div>
 </body>
 <script>
+let hdg = document.getElementById("hdg");
+let sog = document.getElementById("sog");
+let cog = document.getElementById("cog");
+let date = document.getElementById("date");
+let gps = document.getElementById("gps");
+
     var map = L.map('map').setView([-7.2758471,112.7937557
     ], 13);
 
@@ -117,6 +123,14 @@ function fetchData(){
         method : "GET",
     }).done(function(e) {
         console.log(e);
+        if(e!=null){
+            hdg.innerHTML = e.hdg + "°";
+            sog.innerHTML = e.sog + " kn";
+            cog.innerHTML = e.cog + "°";
+            day.innerHTML = e.day;
+            date.innerHTML = e.date;
+            gps.innerHTML = e.gps.latDir + " " + e.gps.lat + " " + e.gps.lonDir + " " + e.gps.long;
+        }
     });
 }
 
