@@ -46,6 +46,7 @@ def data():
         data = {
             "hdg" : mqtt_test.mymqtt.azimuth,
             "sog" : mqtt_test.mymqtt.sog,
+            "speedKm" : mqtt_test.mymqtt.speedKm,
             "cog" : mqtt_test.mymqtt.cog,
             "day" : day,
             "date" : date,
@@ -53,8 +54,12 @@ def data():
                 "lat" : mqtt_test.mymqtt.lat,
                 "latDir" : mqtt_test.mymqtt.latDir,
                 "long"  : mqtt_test.mymqtt.lon,
-                "lonDir" : mqtt_test.mymqtt.lonDir
-            }
+                "lonDir" : mqtt_test.mymqtt.lonDir,
+                "centerLat" : 0,
+                "centerLong" : 0
+            },
+            "counter" : 0,
+            "coor" : [mqtt_test.mymqtt.lats, mqtt_test.mymqtt.lons],
             # "gps" : f"{mqtt_test.mymqtt.latDir} {mqtt_test.mymqtt.lat} {mqtt_test.mymqtt.lonDir} {mqtt_test.mymqtt.lon}"
         }
     return jsonify(data)

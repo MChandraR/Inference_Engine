@@ -356,11 +356,26 @@ class VideoMonitorApp(tk.Tk):
         self.active = False
         self.destroy()
 
+    def onKeyPress(self,event):
+        print("You pressed ", event.char)
+        if event.char.lower() == "a":
+            print("Kapal ke kiri")
+            if self.mqtt is not None : self.mqtt.mqttc.publish("controll/servo", json.dumps({"angle" : 90}))
+        if event.char.lower() == "s":
+            if self.mqtt is not None : self.mqtt.speed = 1500
+            print("Kapal mundur")
+        if event.char.lower() == "w":
+            print("Kapal maju")
+            if self.mqtt is not None : self.mqtt.speed = 1650
+        if event.char.lower() == "d":
+            print("Kapal kekanan")
+
 def launchApp(mqtt):
     global app
     app = VideoMonitorApp(mqtt)
     app.protocol("WM_DELETE_WINDOW", app.on_close)
+    app.bind('<KeyPress>', app.onKeyPress)
     app.mainloop()
 
-# launchApp(Ngit one)
+# launchApp(None)
 

@@ -32,6 +32,7 @@ class myMqtt:
         
         self.form = None
         self.speed = 1650
+        self.speedKm = 0
 
         self.Kp = 1.0
         self.Ki = 0.0
@@ -111,6 +112,7 @@ class myMqtt:
         self.lonDir = data['lonDirection']
         self.sog = data['speed']
         self.cob = data['adjHeading']
+        self.speedKm = data["speedKm"]
 
         if self.form is not None:
             self.form.log_value.set(  ("\n" + str(data)))
@@ -132,6 +134,7 @@ class myMqtt:
         
         res =  json.dumps({
             "kp" : self.Kp,
+            "radius" : 0.8,
             "kd" : self.Kd,
             "ki" : self.Ki,
             "motor" : self.motor,

@@ -106,16 +106,23 @@ let cog = document.getElementById("cog");
 let date = document.getElementById("date");
 let gps = document.getElementById("gps");
 
-    var map = L.map('map').setView([-7.2758471,112.7937557
-    ], 13);
+    
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
+function renderMap(){
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    
+    //L.marker([-7.2758471,112.7937557]).addTo(map)
+    //    .bindPopup('A pretty CSS popup.<br> Easily customizable.')
+    //    .openPopup();
 
-L.marker([-7.2758471,112.7937557]).addTo(map)
-    .bindPopup('A pretty CSS popup.<br> Easily customizable.')
-    .openPopup();
+    //L.marker([-7.2759471,112.7937557]).addTo(map)
+    //    .bindPopup('A pretty CSS popup.<br> Easily customizable.')
+    //    .openPopup();
+}
+
+
 
 function fetchData(){
     $.ajax({
@@ -125,15 +132,26 @@ function fetchData(){
         console.log(e);
         if(e!=null){
             hdg.innerHTML = e.hdg + "°";
-            sog.innerHTML = e.sog + " kn";
+            sog.innerHTML = e.sog + " kn || " + e.speedKm + " Km/h ";
             cog.innerHTML = e.cog + "°";
             day.innerHTML = e.day;
             date.innerHTML = e.date;
             gps.innerHTML = e.gps.latDir + " " + e.gps.lat + " " + e.gps.lonDir + " " + e.gps.long;
+            let ver = e.coor ;
+            var map = L.map('map').setView([ver[0][ver.length/2],ver[1][ver.length/2]], 13);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+           for(let i = 0 ; i < ver[0].length ; i++){
+            L.marker([ver[0][i], ver[1][i]]).addTo(map)
+            .bindPopup('A pretty CSS popup.<br> Easily customizable.')
+            .openPopup();
+           }
         }
     });
 }
 
 setInterval(fetchData, 1000);
+setInterval(renderMap, 3000);
 </script>
 </html>
