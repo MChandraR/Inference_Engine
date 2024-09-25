@@ -137,6 +137,7 @@ function fetchData(){
             day.innerHTML = e.day;
             date.innerHTML = e.date;
             gps.innerHTML = e.gps.latDir + " " + e.gps.lat + " " + e.gps.lonDir + " " + e.gps.long;
+            
             let ver = e.coor ;
             var map = L.map('map').setView([ver[0][ver.length/2],ver[1][ver.length/2]], 13);
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {

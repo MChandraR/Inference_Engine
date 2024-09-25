@@ -58,7 +58,7 @@ def data():
                 "centerLat" : 0,
                 "centerLong" : 0
             },
-            "counter" : 0,
+            "counter" : mqtt_test.mymqtt.counter,
             "coor" : [mqtt_test.mymqtt.lats, mqtt_test.mymqtt.lons],
             # "gps" : f"{mqtt_test.mymqtt.latDir} {mqtt_test.mymqtt.lat} {mqtt_test.mymqtt.lonDir} {mqtt_test.mymqtt.lon}"
         }

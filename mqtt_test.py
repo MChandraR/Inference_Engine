@@ -113,6 +113,7 @@ class myMqtt:
         self.sog = data['speed']
         self.cob = data['adjHeading']
         self.speedKm = data["speedKm"]
+        self.counter = data["counter"]
 
         if self.form is not None:
             self.form.log_value.set(  ("\n" + str(data)))
