@@ -111,8 +111,8 @@ class myMqtt:
         self.latDir = data['latDirection']
         self.lonDir = data['lonDirection']
         self.sog = data['speed']
-        self.cob = data['adjHeading']
-        self.speedKm = data["speedKm"]
+        self.cog = data['adjHeading']
+        # self.speedKm = data["speedKm"]
         self.counter = data["counter"]
 
         if self.form is not None:
