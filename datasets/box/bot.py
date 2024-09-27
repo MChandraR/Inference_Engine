@@ -7,7 +7,8 @@ def replace_characters_in_file(file_path, target_char, replacement_char):
         file_contents = file.read()
 
     # Ganti karakter yang ditargetkan
-    new_contents = file_contents.replace(target_char, replacement_char)
+    if len(file_contents) > 0 and target_char == file_contents[0]:new_contents = replacement_char + file_contents[1:]
+    else : new_contents = file_contents
 
     # Simpan kembali file dengan perubahan
     with open(file_path, 'w', encoding='utf-8') as file:
@@ -23,7 +24,7 @@ def process_text_files_in_folder(folder_path, target_char, replacement_char):
         replace_characters_in_file(txt_file, target_char, replacement_char)
 
 # Contoh penggunaan:
-folder_path = 'train/labels'  # Ganti dengan path folder yang sesuai
+folder_path = 'test/labels'  # Ganti dengan path folder yang sesuai
 target_char = '1'  # Karakter yang akan diganti
 replacement_char = '2'  # Karakter pengganti
 
