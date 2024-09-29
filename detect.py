@@ -34,7 +34,9 @@ import os
 import platform
 import sys
 from pathlib import Path
-
+import pathlib
+temp = pathlib.PosixPath
+pathlib.PosixPath = pathlib.WindowsPath
 import torch
 
 FILE = Path(__file__).resolve()
@@ -76,7 +78,7 @@ def run(
     iou_thres=0.45,  # NMS IOU threshold
     max_det=1000,  # maximum detections per image
     device="",  # cuda device, i.e. 0 or 0,1,2,3 or cpu
-    view_img=False,  # show results
+    view_img=True,  # show results
     save_txt=False,  # save results to *.txt
     save_csv=False,  # save results in CSV format
     save_conf=False,  # save confidences in --save-txt labels

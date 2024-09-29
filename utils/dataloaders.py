@@ -503,7 +503,8 @@ class LoadStreams:
         done.
         """
         self.count += 1
-        if not all(x.is_alive() for x in self.threads) or cv2.waitKey(1) == ord("q") or (not self.form.app.active) :  # q to quit
+        if not all(x.is_alive() for x in self.threads) or cv2.waitKey(1) == ord("q")  :  # q to quit
+            #or (not self.form.app.active)
             # cv2.destroyAllWindows()
             raise StopIteration
 
