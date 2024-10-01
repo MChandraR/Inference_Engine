@@ -16,11 +16,12 @@ import json
 import form 
 import time
 import socketio
+from utils.folder import create_folder_in_public, save_image_to_folder, get_image_path
 import asyncio
 import pathlib
 from datetime import datetime
 from flask_cors import CORS, cross_origin
-from flask import Flask, Request, Response, jsonify
+from flask import Flask, Request, Response, abort, jsonify, send_file
 temp = pathlib.PosixPath
 pathlib.PosixPath = pathlib.WindowsPath
 
@@ -29,8 +30,12 @@ app = Flask(__name__)
 CORS(app)
 dataKapal = {}
 date = datetime.today().strftime('%d/%m/%Y')
-days = ["Sun", "Mon", "Thus", "Wed", "Thurs", "Fri", "Sat"]
+days = [ "Mon", "Thus", "Wed", "Thurs", "Fri", "Sat","Sun"]
 day = days[datetime.today().weekday()%len(days)]
+
+new_path = create_folder_in_public()
+img_id = 0
+
 @sio.event
 async def connect():
     print('connection established')
@@ -95,6 +100,21 @@ def cam3():
     return Response(generate_frames(3),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
+@app.route('/get_image_len')
+def get_image_len():
+    return json.dumps({"len":img_id})
+
+@app.route('/get_image/<int:image_id>', methods=['GET'])
+def get_image(image_id):
+    image_path = get_image_path(new_path, image_id)
+    
+    if image_path:
+        # Kirim gambar menggunakan send_file
+        return send_file(image_path, mimetype='image/jpeg')
+    else:
+        # Jika file tidak ditemukan, kembalikan 404
+        abort(404, description="File tidak ditemukan")
+
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
 if str(ROOT) not in sys.path:
@@ -142,8 +162,8 @@ def stream_video(url, window_name):
                 
     cv2.destroyAllWindows()
 
-weights="./exp/weights/best.pt"  # model path or triton URL
-data="./datasets/data.yaml" # dataset.yaml path
+weights="./best.pt"  # model path or triton URL
+data="./datasets/box/data.yaml" # dataset.yaml path
 
 device = select_device("")
 model = DetectMultiBackend(weights=weights, device=device, dnn=False, data=data, fp16=False)
@@ -152,11 +172,11 @@ model = DetectMultiBackend(weights=weights, device=device, dnn=False, data=data,
 async def run(
     idx,
     mode = 0,
-    weights=ROOT / "exp5/weights/best.pt",  # model path or triton URL
+    weights=ROOT / "./best.pt",  # model path or triton URL
     source="http://192.168.2.148:8081/?action=stream",  # file/dir/URL/glob/screen/0(webcam)
-    data=ROOT / "datasets/data.yaml",  # dataset.yaml path
+    data=ROOT / "datasets/box/data.yaml",  # dataset.yaml path
     imgsz=(640, 640),  # inference size (height, width)
-    conf_thres=0.4,  # confidence threshold
+    conf_thres=0.5,  # confidence threshold
     iou_thres=0.45,  # NMS IOU threshold
     max_det=1000,  # maximum detections per image
     device="",  # cuda device, i.e. 0 or 0,1,2,3 or cpu
@@ -181,7 +201,7 @@ async def run(
     dnn=False,  # use OpenCV DNN for ONNX inference
     vid_stride=1,  # video frame-rate stride
 ):
-    global model, frame1
+    global model, frame1, img_id
     # Directories
     save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
     (save_dir / "labels" if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
@@ -194,6 +214,7 @@ async def run(
 
     bs = 1  # batch_size
     curTime = time.time()
+    boxTime = time.time()
  
     view_img = check_imshow(warn=True)
     dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride, form=form)
@@ -237,7 +258,7 @@ async def run(
         # pred = utils.general.apply_classifier(pred, classifier_model, im, im0s)
         for i, det in enumerate(pred):  # per image
             seen += 1
-           
+            save_box = False
             p, im0, frame = path[i], im0s[i].copy(), dataset.count
             s += f"{i}: "
             box = (0,0), (0,0)
@@ -282,9 +303,14 @@ async def run(
                         c = int(cls)  # integer class
                         label = None if hide_labels else (names[c] if hide_conf else f"{names[c]} {conf:.2f}")
                         pos = (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3]))
-                        if int(pos[0][1]) > 180 and int(pos[1][1]) < 420 : annotator.box_label(xyxy, label, color=colors(c, True))
+                        if int(pos[0][1]) > 180 and int(pos[1][1]) < 420 : 
+                            pass
+                        if mode == 0 and (names[c] == "green_buoy" or names[c]=="red_buoy") :annotator.box_label(xyxy, label, color=colors(c, True))
+                        if mode == 1 and (names[c] == "blue_box" or names[c]=="green_box") :
+                            annotator.box_label(xyxy, label, color=colors(c, True))
+                            save_box = True
                     # if save_crop:
-                        save_one_box(xyxy, imc, file=save_dir / "crops" / names[c] / f"{p.stem}.jpg", BGR=True)
+                        if names[c] == "blue_box" or names[c] == "green_box" : save_one_box(xyxy, imc, file=save_dir / "crops" / names[c] / f"{p.stem}.jpg", BGR=True)
                     box = xyxy
                     
                     inValue = mqtt_test.mymqtt.inv
@@ -308,7 +334,10 @@ async def run(
                     "addAngle" : targetAngle
                 }))
             prevAngle = targetAngle
-
+            if save_box and abs(time.time() - boxTime) > 1:
+                img_id += 1
+                boxTime = time.time()
+                save_image_to_folder(im0, new_path, img_id)
 
             # Stream results
             im0 = annotator.result()
@@ -372,15 +401,17 @@ async def mains():
         
 async def inference1():
     global form
-    asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.4:8081/?action=stream"))
+    time.sleep(3)
+    #asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.4:8081/?action=stream"))
    
 async def inference2():
     global form
-    asyncio.create_task(run(idx=2,source="http://192.168.1.4:8080/?action=stream"))
+    asyncio.create_task(run(idx=2,mode=1,source="http://192.168.1.3:4747/video"))
     
 async def inference3():
     global form
-    asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.5:8080/?action=stream"))
+    time.sleep(6)
+    #asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.5:8080/?action=stream"))
 
 def start1():
     asyncio.run(inference1())
