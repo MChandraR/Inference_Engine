@@ -102,7 +102,7 @@ def cam3():
 
 @app.route('/get_image_len')
 def get_image_len():
-    return json.dumps({"len":img_id})
+    return jsonify({"len":img_id})
 
 @app.route('/get_image/<int:image_id>', methods=['GET'])
 def get_image(image_id):
@@ -337,7 +337,7 @@ async def run(
             if save_box and abs(time.time() - boxTime) > 1:
                 img_id += 1
                 boxTime = time.time()
-                save_image_to_folder(im0, new_path, img_id)
+                save_image_to_folder(im0, new_path, img_id, f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon}")
 
             # Stream results
             im0 = annotator.result()
@@ -402,16 +402,16 @@ async def mains():
 async def inference1():
     global form
     time.sleep(3)
-    #asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.4:8081/?action=stream"))
+    asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.4:8081/?action=stream"))
    
 async def inference2():
     global form
-    asyncio.create_task(run(idx=2,mode=1,source="http://192.168.1.3:4747/video"))
+    asyncio.create_task(run(idx=2,mode=1,source="http://192.168.1.4:8080/?action=stream"))
     
 async def inference3():
     global form
     time.sleep(6)
-    #asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.5:8080/?action=stream"))
+    asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.5:8080/?action=stream"))
 
 def start1():
     asyncio.run(inference1())

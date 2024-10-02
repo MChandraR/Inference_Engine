@@ -35,8 +35,8 @@
                 <div class="capture-area">
                     <H2>Hasil Capture</H2>
                     <hr>
-                    <dir class="capture-result">
-                                           </dir>
+                    <div class="capture-result" id="capture-result">
+                                           </div>
                 </div>
             </div>
             <div class="area2">
@@ -105,6 +105,7 @@ let sog = document.getElementById("sog");
 let cog = document.getElementById("cog");
 let date = document.getElementById("date");
 let gps = document.getElementById("gps");
+let capture = document.getElementById("capture-result");
 
     
 
@@ -152,7 +153,29 @@ function fetchData(){
     });
 }
 
+let idx = 0;
+
+function getImageLen(){
+    $.ajax({
+        url: "http://localhost:5000/get_image_len",
+        method : "GET",
+    }).done((e)=>{
+        console.log(e);
+        if(idx == e.len) return;
+        for(let i = idx+1 ;i <= e.len;i++){
+            let img = document.createElement("img");
+            img.src = "http://localhost:5000/get_image/" + i;
+            img.classList.add("capture-img");
+            console.log("Lol");
+            console.log(img);
+            capture.append(img);
+        }
+        idx = e.len;
+    });
+}
+
 setInterval(fetchData, 1000);
 setInterval(renderMap, 3000);
+setInterval(getImageLen, 1000);
 </script>
 </html>

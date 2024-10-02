@@ -116,7 +116,6 @@ body{
 }
 
 .capture-result{
-    margin-left : -2.5rem;
     display : grid;
     width: 95%;
     grid-template-columns : 50% 50%;
@@ -124,6 +123,14 @@ body{
     column-gap: 1rem;
     justify-content:start;
     align-items: start;
+    margin-bottom : 2rem;
+    max-height: 50vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.capture-img{
+    width: 100%;
 }
 
 .info-area h2{
