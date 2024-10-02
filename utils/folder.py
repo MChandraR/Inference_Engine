@@ -20,13 +20,13 @@ def create_folder_in_public(public_dir='public/captures'):
     return new_folder_path
 
 # Fungsi untuk menyimpan gambar di folder yang sudah dibuat
-def save_image_to_folder(image, folder_path, image_id, label):
+def save_image_to_folder(y,image, folder_path, image_id, label):
     # Path lengkap untuk menyimpan gambar
     image_filename = f"{image_id}.jpg"
     image_path = os.path.join(folder_path, image_filename)
 
     # Simpan gambar dengan format JPG menggunakan OpenCV
-    cv2.putText(image,label, (20,450), 0, 1, (255,0,0) , thickness=2, lineType=cv2.LINE_AA)
+    cv2.putText(image,label, (20,y), 0, 1, (0,255,0) , thickness=2, lineType=cv2.LINE_AA)
     cv2.imwrite(image_path, image)
 
     print(f"Gambar berhasil disimpan di: {image_path}")
