@@ -26,7 +26,7 @@ def save_image_to_folder(y,image, folder_path, image_id, label):
     image_path = os.path.join(folder_path, image_filename)
 
     # Simpan gambar dengan format JPG menggunakan OpenCV
-    cv2.putText(image,label, (20,y), 0, 1, (0,255,0) , thickness=2, lineType=cv2.LINE_AA)
+    cv2.putText(image,label, (20,y), 0, 1, (255,255,255) , thickness=2, lineType=cv2.LINE_AA)
     cv2.imwrite(image_path, image)
 
     print(f"Gambar berhasil disimpan di: {image_path}")

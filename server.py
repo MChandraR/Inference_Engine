@@ -321,11 +321,11 @@ async def run(
                         if int(box[2] ) > 200 and abs(int(box[0]) - int(box[2])) > size[("green_buoy" if  inValue == 0 else "red_buoy")] : 
                            size[("green_buoy" if  inValue == 0 else "red_buoy")] = abs(int(box[0]) - int(box[2]))
                            prevX = max(0, int(box[2] ) - 200)
-                           targetAngle = -60
+                           targetAngle = -40
                     if mode == 0 and names[c] == ("green_buoy" if  inValue == 1 else "red_buoy") and pilot == "AUTO":
                         if int(box[0] ) < 440 and abs(abs(int(box[0]) - int(box[2]))) > size[("green_buoy" if  inValue == 1 else "red_buoy")]: 
                            size[("green_buoy" if  inValue == 1 else "red_buoy")] = abs(int(box[0]) - int(box[2]))
-                           targetAngle = 60 if max(500-int(box[0]), 0) > prevX else targetAngle
+                           targetAngle = 40 if max(500-int(box[0]), 0) > prevX else targetAngle
                     print( (int(box[0]), int(box[1])), (int(box[2]), int(box[3])))
             
             if prevAngle is not targetAngle and mode==0 and abs(curTime - time.time()) > 0.1:
