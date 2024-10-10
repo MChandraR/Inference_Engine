@@ -21,6 +21,7 @@ import asyncio
 import pathlib
 from datetime import datetime
 from flask_cors import CORS, cross_origin
+from flask_socketio import SocketIO, send
 from flask import Flask, Request, Response, abort, jsonify, send_file
 temp = pathlib.PosixPath
 pathlib.PosixPath = pathlib.WindowsPath
@@ -28,6 +29,11 @@ pathlib.PosixPath = pathlib.WindowsPath
 sio = socketio.AsyncClient()
 app = Flask(__name__)
 CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading',  max_http_buffer_size=100000000,  # 100 MB buffer size
+                    ping_interval=60,                # 60 detik interval antara ping
+                    ping_timeout=120,                # 120 detik timeout sebelum disconnect
+                    allow_upgrades=True,             # Mengizinkan upgrade protokol
+                    engineio_logger=True)
 dataKapal = {}
 date = datetime.today().strftime('%d/%m/%Y')
 days = [ "Mon", "Thus", "Wed", "Thurs", "Fri", "Sat","Sun"]
@@ -36,13 +42,10 @@ day = days[datetime.today().weekday()%len(days)]
 new_path = create_folder_in_public()
 img_id = 0
 
-@sio.event
-async def connect():
-    print('connection established')
-
-@sio.event
-async def disconnect():
-    print('disconnected from server')
+@socketio.on('message')
+def handle_message(message):
+    print('Message from client:', message)
+    send(f"Echo: {message}", broadcast=True)
     
 @app.route('/data')
 def data():
@@ -393,6 +396,7 @@ async def run(
         strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
 async def mains():
+    return
     try:
         await sio.connect('http://localhost:3000')
         await sio.wait()
@@ -426,18 +430,21 @@ def start3():
     #run(idx=3,mode=1,source="http://192.168.1.4:8080/?action=stream")
     
 def startServer():
-    app.run(host='localhost', port=5000)
+    app.run(host='0.0.0.0', port=5000)
 
 formThread = Thread(target=form.launchApp, args=(mqtt_test.mymqtt,))
 inf1 = Thread(target=start1, daemon=True)
 inf2 = Thread(target=start2)
 inf3 = Thread(target=start3)
+# socketThread = Thread(target=mains)
 serverThread = Thread(target=startServer)
+# socketThread.start()
 formThread.start()
 inf1.start()
 inf2.start()
 inf3.start()
 serverThread.start()
+# socketThread.join()
 formThread.join()
 inf1.join()
 inf2.join(0)
