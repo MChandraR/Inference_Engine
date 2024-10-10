@@ -334,13 +334,13 @@ class VideoMonitorApp(tk.Tk):
         self.mqtt.counter +=1
         self.counter_value.set(str(self.mqtt.counter))
         if self.mqtt is not None:
-            self.mqtt.mqttc.publish("data/setCounter", json.dumps({"value" : self.mqtt.counter - 1}))
+            self.mqtt.mqttc.emit("setCounter",{"value" : self.mqtt.counter - 1})
         
     def update_counter_min(self):
         self.mqtt.counter -=1
         self.counter_value.set(str(self.mqtt.counter))
         if self.mqtt is not None:
-            self.mqtt.mqttc.publish("data/setCounter", json.dumps({"value" :self.mqtt.counter - 1 }))
+            self.mqtt.mqttc.emit("setCounter",{"value" :self.mqtt.counter - 1 })
 
     def update_position(self):
         self.x_position += 10

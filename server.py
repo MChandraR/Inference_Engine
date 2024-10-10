@@ -34,6 +34,8 @@ socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading',  max_
                     ping_timeout=120,                # 120 detik timeout sebelum disconnect
                     allow_upgrades=True,             # Mengizinkan upgrade protokol
                     engineio_logger=True)
+
+mqtt_test.mqtt(socketio)
 dataKapal = {}
 date = datetime.today().strftime('%d/%m/%Y')
 days = [ "Mon", "Thus", "Wed", "Thurs", "Fri", "Sat","Sun"]
@@ -45,7 +47,15 @@ img_id = 0
 @socketio.on('message')
 def handle_message(message):
     print('Message from client:', message)
-    send(f"Echo: {message}", broadcast=True)
+    #send(f"Echo: {message}", broadcast=True)
+    
+@socketio.on('data')
+def data(data):
+    mqtt_test.mymqtt.on_message(data)
+    
+@socketio.on("join")
+def join(data):
+    mqtt_test.mymqtt.sendPub()
     
 @app.route('/data')
 def data():
@@ -333,9 +343,10 @@ async def run(
             
             if prevAngle is not targetAngle and mode==0 and abs(curTime - time.time()) > 0.1:
                 curTime = time.time() 
-                mqtt_test.mymqtt.mqttc.publish("data/addAngle",json.dumps({
-                    "addAngle" : targetAngle
-                }))
+                mqtt_test.mymqtt.mqttc.emit("addAngle",{
+                    "event" : "ang",
+                    "angle" : targetAngle
+                })
             prevAngle = targetAngle
             if save_box and abs(time.time() - boxTime) > 1:
                 img_id += 1
@@ -412,7 +423,7 @@ async def inference1():
    
 async def inference2():
     global form
-    asyncio.create_task(run(idx=2,source="http://192.168.1.4:8080/?action=stream"))
+    asyncio.create_task(run(idx=2,source="http://192.168.1.2:4747/video"))
     
 async def inference3():
     global form
@@ -438,17 +449,20 @@ formThread = Thread(target=form.launchApp, args=(mqtt_test.mymqtt,))
 inf1 = Thread(target=start1, daemon=True)
 inf2 = Thread(target=start2)
 inf3 = Thread(target=start3)
+dataThread = Thread(target=mqtt_test.mymqtt.sendData)
 # socketThread = Thread(target=mains)
 serverThread = Thread(target=startServer)
 # socketThread.start()
 formThread.start()
 inf1.start()
+dataThread.start()
 inf2.start()
 inf3.start()
 serverThread.start()
 # socketThread.join()
 formThread.join()
 inf1.join()
+dataThread.join()
 inf2.join(0)
 inf3.join(0)
 serverThread.join()
