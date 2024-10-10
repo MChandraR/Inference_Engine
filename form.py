@@ -172,7 +172,7 @@ class VideoMonitorApp(tk.Tk):
         self.downspeed.grid(row=9, column=0, padx=5, pady=5, sticky="e")
         
         self.motor_set = tk.Button(self.control_frame, text="Motor Set", command=self.setMotor)
-        self.motor_set.grid(row=9, column=3, padx=5, pady=5, sticky="w")
+        self.motor_set.grid(row=10, column=0, padx=5, pady=5, sticky="w")
         
         #Informasi lat dan long
         self.infLabel = tk.Label(self.control_frame, text="Nilai Lat & Long:")

@@ -324,11 +324,11 @@ async def run(
                         if int(box[2] ) > 200 and abs(int(box[0]) - int(box[2])) > size[("green_buoy" if  inValue == 0 else "red_buoy")] : 
                            size[("green_buoy" if  inValue == 0 else "red_buoy")] = abs(int(box[0]) - int(box[2]))
                            prevX = max(0, int(box[2] ) - 200)
-                           targetAngle = -60
+                           targetAngle = -40
                     if mode == 0 and names[c] == ("green_buoy" if  inValue == 1 else "red_buoy") and pilot == "AUTO":
                         if int(box[0] ) < 440 and abs(abs(int(box[0]) - int(box[2]))) > size[("green_buoy" if  inValue == 1 else "red_buoy")]: 
                            size[("green_buoy" if  inValue == 1 else "red_buoy")] = abs(int(box[0]) - int(box[2]))
-                           targetAngle = 60 if max(500-int(box[0]), 0) > prevX else targetAngle
+                           targetAngle = 40 if max(500-int(box[0]), 0) > prevX else targetAngle
                     print( (int(box[0]), int(box[1])), (int(box[2]), int(box[3])))
             
             if prevAngle is not targetAngle and mode==0 and abs(curTime - time.time()) > 0.1:
@@ -340,8 +340,10 @@ async def run(
             if save_box and abs(time.time() - boxTime) > 1:
                 img_id += 1
                 boxTime = time.time()
-                save_image_to_folder(im0, new_path, img_id, f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon}")
-
+                save_image_to_folder(390,im0, new_path, img_id, f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon} ")
+                save_image_to_folder(430,im0, new_path, img_id, f"COG | SOG : {mqtt_test.mymqtt.cog} | {mqtt_test.mymqtt.sog}")
+                save_image_to_folder(470,im0, new_path, img_id, f"Time : {date}")
+ 
             # Stream results
             im0 = annotator.result()
             frames = None
@@ -410,7 +412,7 @@ async def inference1():
    
 async def inference2():
     global form
-    asyncio.create_task(run(idx=2,mode=1,source="http://192.168.1.4:8080/?action=stream"))
+    asyncio.create_task(run(idx=2,source="http://192.168.1.4:8080/?action=stream"))
     
 async def inference3():
     global form

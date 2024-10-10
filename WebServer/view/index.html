@@ -133,7 +133,7 @@ function fetchData(){
         console.log(e);
         if(e!=null){
             hdg.innerHTML = e.hdg + "°";
-            sog.innerHTML = e.sog + " kn || " + e.speedKm + " Km/h ";
+            sog.innerHTML = e.sog + " kn || " + e.sog*1.8 + " Km/h ";
             cog.innerHTML = e.cog + "°";
             day.innerHTML = e.day;
             date.innerHTML = e.date;
