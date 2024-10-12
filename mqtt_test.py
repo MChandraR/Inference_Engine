@@ -10,8 +10,8 @@ class myMqtt:
     def __init__(self, socket) -> None:
         self.counter = 1
         self.lats = [
-            0.868491167,
-            0.868552667,
+            0.868530167,
+            0.868564333,
             0.868569833,
             0.868505333,
             0.868465833,
@@ -21,8 +21,8 @@ class myMqtt:
         ]
 
         self.lons = [
-            104.4592822,
-            104.459324,
+            104.4593138,
+            104.4594077,
             104.459437,
             104.4594323,
             104.4594418,
@@ -101,7 +101,7 @@ class myMqtt:
         #self.counter = data["counter"]
 
         if self.form is not None:
-            self.form.log_value.set(  ("\n" + str(data)))
+            self.form.log_value.set(  ("\n" + str(data)[0:100]))
             self.form.lat_value.set(self.lat)
             self.form.counter_value.set(str(data["counter"]))
             self.form.coordinate_value.set(self.azimuth)
