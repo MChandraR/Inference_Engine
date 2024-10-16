@@ -21,6 +21,11 @@ class myMqtt:
             0.8684015,
             0.868530167
         ]
+        
+        self.Lons = []
+        self.Lats = []
+        self.captureCounter = 9
+        self.inverseCounter = 7
 
         self.lons = [
             104.4593138,
@@ -34,6 +39,8 @@ class myMqtt:
             104.4595068,
             104.4593138,
         ]
+        
+        self.inversed = False
         
         self.form = None
         self.speed = 1650
@@ -85,7 +92,6 @@ class myMqtt:
                 "radius" : 1.5,
                 "kd" : self.Kd,
                 "ki" : self.Ki,
-                "counter" : self.counter,
                 "motor" : self.motor,
                 "speed" : self.speed if self.counter < len(self.lats) else 1550
             }
@@ -102,7 +108,11 @@ class myMqtt:
         self.sog = data['speed']
         self.cog = data['adjHeading']
         # self.speedKm = data["speedKm"]
-        #self.counter = data["counter"]
+        self.counter = data["counter"]
+        
+        if self.counter >= self.inverseCounter and not self.inversed:
+            self.inv  = not self.inv
+            self.inversed = True
 
         if self.form is not None:
             self.form.log_value.set(  ("\n" + str(data)[0:200]))

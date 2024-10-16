@@ -176,7 +176,7 @@ def stream_video(url, window_name):
     cv2.destroyAllWindows()
 
 weights="./best.pt"  # model path or triton URL
-data="./datasets/box/data.yaml" # dataset.yaml path
+data="./datasets/box/data.yaml" # dataset.yaml pat
 
 device = select_device("")
 model = DetectMultiBackend(weights=weights, device=device, dnn=False, data=data, fp16=False)
@@ -349,7 +349,7 @@ async def run(
                     "angle" : targetAngle
                 })
             prevAngle = targetAngle
-            if save_box and abs(time.time() - boxTime) > 1:
+            if save_box and abs(time.time() - boxTime) > 1 and mqtt_test.mymqtt.counter >= mqtt_test.mymqtt.captureCounter:
                 img_id += 1
                 boxTime = time.time()
                 save_image_to_folder(390,im0, new_path, img_id, f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon} ")

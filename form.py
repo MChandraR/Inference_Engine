@@ -151,6 +151,9 @@ class VideoMonitorApp(tk.Tk):
         self.save_coor = tk.Button(self.detail_frame, text="  Simpan  ", command=self.updateLatLon)
         self.save_coor.grid(row=5, column=4, padx=5, pady=5, sticky="w")
         
+        self.save_coor = tk.Button(self.detail_frame, text="  Simpan & Next  ", command=self.saveLatLon)
+        self.save_coor.grid(row=5, column=5, padx=5, pady=5, sticky="w")
+        
         
         # Baris kedua, kolom kedua untuk tombol pengaturan counter dan posisi
         self.control_frame = tk.Frame(self)
@@ -277,15 +280,33 @@ class VideoMonitorApp(tk.Tk):
         self.x_position = 0
         self.y_position = 0
         self.motor = 0
+        self.curIdx = 0
+        self.lll = []
         
         # Simulasi video update
         self.after(1000, self.update_video_frames)
         
-        mqtt.setForm(self)
+        # mqtt.setForm(self)
         self.mqtt = mqtt
     def speedUp(self):
         if self.mqtt is not None : 
             self.mqtt.speed += 10
+            
+    def saveLatLon(self):
+        if self.mqtt is not None or True:
+            # self.mqtt.Lats.push(self.mqtt.lat)
+            # self.mqtt.Lons.push(self.mqtt.lon)
+            self.lll.append(self.curIdx)
+            with open("coor.json", "w+") as fil:
+                fil.write(json.dumps({
+                    "lats" : self.lll,
+                    "lons" : self.lll
+                }))
+            self.curIdx += 1
+            self.option = [str(idx) for idx in range(self.curIdx)]
+            self.index = tk.OptionMenu(self.detail_frame,self.clicked, *self.option )
+            self.index.grid(row=4, column=4, padx=5, pady=5, sticky="w")
+
             
     def speedDown(self):
         if self.mqtt is not None:
@@ -334,13 +355,13 @@ class VideoMonitorApp(tk.Tk):
         self.mqtt.counter +=1
         self.counter_value.set(str(self.mqtt.counter))
         if self.mqtt is not None:
-            self.mqtt.mqttc.emit("setCounter",{"value" : self.mqtt.counter - 1})
+            self.mqtt.mqttc.emit("setCounter",{"event":"sc","value" : self.mqtt.counter + 1})
         
     def update_counter_min(self):
         self.mqtt.counter -=1
         self.counter_value.set(str(self.mqtt.counter))
         if self.mqtt is not None:
-            self.mqtt.mqttc.emit("setCounter",{"value" :self.mqtt.counter - 1 })
+            self.mqtt.mqttc.emit("setCounter",{"event":"sc","value" :self.mqtt.counter - 1 })
 
     def update_position(self):
         self.x_position += 10
@@ -379,5 +400,5 @@ def launchApp(mqtt):
     app.bind('<KeyPress>', app.onKeyPress)
     app.mainloop()
 
-# launchApp(None)
+launchApp(None)
 
