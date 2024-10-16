@@ -12,23 +12,27 @@ class myMqtt:
         self.lats = [
             0.868530167,
             0.868564333,
-            0.868569833,
-            0.868505333,
-            0.868465833,
-            0.868416833,
-            0.868409333,
-            0.868484333
+            0.868613833,
+            0.868647,
+            0.868581,
+            0.868520833,
+            0.868490167,
+            0.868453167,
+            0.8684015,
+            0.868530167
         ]
 
         self.lons = [
             104.4593138,
             104.4594077,
-            104.459437,
-            104.4594323,
+            104.4594573,
+            104.4595638,
             104.4594418,
-            104.4595032,
-            104.4594673,
-            104.4592832
+            104.4596103,
+            104.4596293,
+            104.459564,
+            104.4595068,
+            104.4593138,
         ]
         
         self.form = None
@@ -78,7 +82,7 @@ class myMqtt:
             res = {
                 "event" : "conf",
                 "kp" : self.Kp,
-                "radius" : 0.8,
+                "radius" : 1.5,
                 "kd" : self.Kd,
                 "ki" : self.Ki,
                 "counter" : self.counter,
@@ -101,7 +105,7 @@ class myMqtt:
         #self.counter = data["counter"]
 
         if self.form is not None:
-            self.form.log_value.set(  ("\n" + str(data)[0:100]))
+            self.form.log_value.set(  ("\n" + str(data)[0:200]))
             self.form.lat_value.set(self.lat)
             self.form.counter_value.set(str(data["counter"]))
             self.form.coordinate_value.set(self.azimuth)
