@@ -360,7 +360,7 @@ class VideoMonitorApp(tk.Tk):
         print("You pressed ", event.char)
         if event.char.lower() == "a":
             print("Kapal ke kiri")
-            if self.mqtt is not None : self.mqtt.mqttc.publish("controll/servo", json.dumps({"angle" : 90}))
+            if self.mqtt is not None : self.mqtt.mqttc.emit("belok",{"event" : "belok","value" : -10})
         if event.char.lower() == "s":
             if self.mqtt is not None : self.mqtt.speed = 1500
             print("Kapal mundur")
@@ -369,6 +369,8 @@ class VideoMonitorApp(tk.Tk):
             if self.mqtt is not None : self.mqtt.speed = 1650
         if event.char.lower() == "d":
             print("Kapal kekanan")
+            if self.mqtt is not None : self.mqtt.mqttc.emit("belok",{"event" : "belok","value" : 10})
+
 
 def launchApp(mqtt):
     global app

@@ -213,6 +213,7 @@ async def run(
     half=False,  # use FP16 half-precision inference
     dnn=False,  # use OpenCV DNN for ONNX inference
     vid_stride=1,  # video frame-rate stride
+    useAI = True
 ):
     global model, frame1, img_id
     # Directories
@@ -341,7 +342,7 @@ async def run(
                            targetAngle = 40 if max(500-int(box[0]), 0) > prevX else targetAngle
                     print( (int(box[0]), int(box[1])), (int(box[2]), int(box[3])))
             
-            if prevAngle is not targetAngle and mode==0 and abs(curTime - time.time()) > 0.1:
+            if prevAngle is not targetAngle and mode==0 and abs(curTime - time.time()) > 0.1 and useAI:
                 curTime = time.time() 
                 mqtt_test.mymqtt.mqttc.emit("addAngle",{
                     "event" : "ang",
