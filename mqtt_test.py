@@ -93,9 +93,10 @@ class myMqtt:
             res = {
                 "event" : "conf",
                 "kp" : self.Kp,
-                "radius" : 1.5,
+                "radius" : 1,
                 "kd" : self.Kd,
                 "ki" : self.Ki,
+		"counter":self.counter,
                 "motor" : self.motor,
                 "speed" : self.speed if self.counter < len(self.lats) else 1550
             }
