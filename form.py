@@ -286,7 +286,7 @@ class VideoMonitorApp(tk.Tk):
         # Simulasi video update
         self.after(1000, self.update_video_frames)
         
-        # mqtt.setForm(self)
+        mqtt.setForm(self)
         self.mqtt = mqtt
     def speedUp(self):
         if self.mqtt is not None : 
@@ -319,12 +319,14 @@ class VideoMonitorApp(tk.Tk):
             
         
     def updateLatLon(self):
-        try:
-            idx = min(int(self.index.get())-1, len(self.mqtt.lats)-1)
-            self.mqtt.lats[idx] = int(self.latSet.get())
-            self.mqtt.lons[idx] = int(self.longSet.get())
-        except ValueError:
-            print(ValueError)
+        if self.mqtt is not None or True:
+            self.mqtt.Lats[self.clicked.get] = self.mqtt.lat
+            self.mqtt.Lons[self.clicked.get] = self.mqtt.lon
+            with open("coor.json", "w+") as fil:
+                fil.write(json.dumps({
+                    "lats" : self.lll,
+                    "lons" : self.lll
+                }))
 
     def update_video_frames(self):
         # Simulasi update frame video setiap detik
@@ -400,5 +402,5 @@ def launchApp(mqtt):
     app.bind('<KeyPress>', app.onKeyPress)
     app.mainloop()
 
-launchApp(None)
+# launchApp(None)
 
