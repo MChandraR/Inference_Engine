@@ -294,13 +294,13 @@ class VideoMonitorApp(tk.Tk):
             
     def saveLatLon(self):
         if self.mqtt is not None or True:
-            # self.mqtt.Lats.push(self.mqtt.lat)
-            # self.mqtt.Lons.push(self.mqtt.lon)
+            self.mqtt.Lats.append(self.mqtt.lat)
+            self.mqtt.Lons.append(self.mqtt.lon)
             self.lll.append(self.curIdx)
             with open("coor.json", "w+") as fil:
                 fil.write(json.dumps({
-                    "lats" : self.lll,
-                    "lons" : self.lll
+                    "lats" : self.mqtt.Lats,
+                    "lons" : self.mqtt.Lons
                 }))
             self.curIdx += 1
             self.option = [str(idx) for idx in range(self.curIdx)]
@@ -383,7 +383,7 @@ class VideoMonitorApp(tk.Tk):
         print("You pressed ", event.char)
         if event.char.lower() == "a":
             print("Kapal ke kiri")
-            if self.mqtt is not None : self.mqtt.mqttc.emit("belok",{"event" : "belok","value" : -10})
+            if self.mqtt is not None : self.mqtt.mqttc.emit("belok",{"event" : "belok","angle" : -10})
         if event.char.lower() == "s":
             if self.mqtt is not None : self.mqtt.speed = 1500
             print("Kapal mundur")
@@ -392,8 +392,10 @@ class VideoMonitorApp(tk.Tk):
             if self.mqtt is not None : self.mqtt.speed = 1650
         if event.char.lower() == "d":
             print("Kapal kekanan")
-            if self.mqtt is not None : self.mqtt.mqttc.emit("belok",{"event" : "belok","value" : 10})
-
+            if self.mqtt is not None : self.mqtt.mqttc.emit("belok",{"event" : "belok","angle" : 10})
+        if event.char.lower() == " ":
+            print("Kapal stop")
+            if self.mqtt is not None : self.mqtt.speed = 1550
 
 def launchApp(mqtt):
     global app

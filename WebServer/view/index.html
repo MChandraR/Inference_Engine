@@ -86,7 +86,7 @@
                 </div>
                 <div class="lintasan-area">
                     <H2>LINTASAN :</H2>
-                    <h1 class="mark">A</h1>
+                    <h1 class="mark" id="mark">A</h1>
                     <br><br>
                 </div>
                 <img class="logo-robotik" src="images/logo_robotika.png" alt="">
@@ -105,6 +105,7 @@ let sog = document.getElementById("sog");
 let cog = document.getElementById("cog");
 let date = document.getElementById("date");
 let gps = document.getElementById("gps");
+let mark = document.getElementById("mark");
 let capture = document.getElementById("capture-result");
 
     
@@ -138,17 +139,27 @@ function fetchData(){
             day.innerHTML = e.day;
             date.innerHTML = e.date;
             gps.innerHTML = e.gps.latDir + " " + e.gps.lat + " " + e.gps.lonDir + " " + e.gps.long;
-            
+            mark.innerHTML = e.lintasan;
+
             let ver = e.coor ;
             var map = L.map('map').setView([ver[0][ver.length/2],ver[1][ver.length/2]], 13);
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 18
             }).addTo(map);
-           for(let i = 0 ; i < ver[0].length ; i++){
-            L.marker([ver[0][i], ver[1][i]]).addTo(map)
-            .bindPopup('A pretty CSS popup.<br> Easily customizable.')
-            .openPopup();
-           }
+
+            let setPoints = [];
+
+            for(let i = 0 ; i < ver[0].length ; i++){
+                setPoints.push([ver[0][i], ver[1][i]]);
+                    L.marker([ver[0][i], ver[1][i]]).addTo(map)
+                    .bindPopup('A pretty CSS popup.<br> Easily customizable.')
+                    .openPopup();
+            }
+            var polyline = L.polyline(setPoints, {color: 'blue'}).addTo(map);
+
+            // Fit peta sesuai dengan bounding box dari polyline
+            map.fitBounds(polyline.getBounds());
         }
     });
 }
