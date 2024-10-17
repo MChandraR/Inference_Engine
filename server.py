@@ -430,7 +430,7 @@ async def inference2():
 async def inference3():
     global form
     time.sleep(6)
-    asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.4:8080/?action=stream"))
+    asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.7:8080/?action=stream"))
 
 def start1():
     asyncio.run(inference1())
