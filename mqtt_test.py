@@ -3,57 +3,56 @@ import math
 import json
 import time
 import paho.mqtt.client as mqtt
-from threading import Thread
+from threading import Thread,Timer
 import asyncio
 
 class myMqtt:
     def __init__(self, socket) -> None:
         self.counter = 1
         self.lats = [
-            0.8685735,
-            0.868607667,
-            0.868639,
-            0.868644,
-            0.868603333,
-            0.86857,
-            0.868511833,
-            0.868500667,
-            0.868474333,
-            0.868441167,
-            0.868347167,
-            0.868340167, 
-            0.868374, 
-            0.868465667, 
-            0.868441333, 
-            0.868531, 
-            0.868527667, 
-            0.868485833
-        ]
+                0.868596167,
+                0.868623167,
+                0.868674833,
+                0.868623667,
+                0.868596167,
+                0.868556167,
+                0.868515333,
+                0.868494,
+                0.868477833,
+                0.8684315,
+                0.868380333,
+                0.868387167,
+                0.8684105,
+                0.868483,
+                0.868456167,
+                0.868559333,
+                0.868503333
+            ]
         
         self.Lons = []
         self.Lats = []
-        self.captureCounter = 10
-        self.inverseCounter = 8
+        self.captureCounter = 9
+        self.inverseCounter = 7
+        self.stopPoint = [15]
 
         self.lons = [
-            104.4593748,
-            104.4594482,
-            104.4594575,
-            104.4595215,
-            104.4595723,
-            104.4596138,
-            104.4596872,
-            104.4596323,
-            104.4595733,
-            104.4595832 ,
-            104.4595442,
-            104.4594243, 
-            104.4594817,
-            104.4594785,
-            104.4594247,
-            104.4593605,
-            104.4593455,
-            104.4592367
+            104.4594112,
+            104.4594732,
+            104.4595188,
+            104.4595777,
+            104.4595865,
+            104.4596198,
+            104.4596968,
+            104.4596423,
+            104.4595773,
+            104.4595467,
+            104.4595602,
+            104.459458,
+            104.459489,
+            104.4594625,
+            104.459427,
+            104.4593293,
+            104.4592398
         ]
         
         self.inversed = False
@@ -66,7 +65,7 @@ class myMqtt:
         self.Ki = 0.0
         self.Kd = 0.1
         self.inv = 0
-        self.radius = 0.6
+        self.radius = 0.8
         self.lat = 0
         self.lon = 0
         self.azm = 0
@@ -88,6 +87,9 @@ class myMqtt:
         self.mqttc.on("data", self.on_message)
         self.sendPub()
         #self.sendData()
+
+    def turnOnMotor(self):
+        self.motor = 1
 
     def sendPub(self):
         self.mqttc.emit("setLats", {
@@ -112,6 +114,12 @@ class myMqtt:
                 "motor" : self.motor,
                 "speed" : self.speed if self.counter < len(self.lats) else 1550
             }
+            if self.counter in self.stopPoint and self.motor == 1:
+                self.stopPoint.remove(self.counter)
+                self.motor = 0
+                tim = Timer(5, self.turnOnMotor, None)
+                tim.start()
+                
             if self.form is not None: self.form.log_res.set(str(res))
             self.mqttc.emit("conf", res)
 
