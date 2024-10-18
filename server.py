@@ -185,6 +185,7 @@ model = DetectMultiBackend(weights=weights, device=device, dnn=False, data=data,
 @smart_inference_mode()
 async def run(
     idx,
+    camsync = False,
     mode = 0,
     weights=ROOT / "./best.pt",  # model path or triton URL
     source="http://192.168.2.148:8081/?action=stream",  # file/dir/URL/glob/screen/0(webcam)
@@ -356,7 +357,11 @@ async def run(
                 save_image_to_folder(390,im0, new_path, img_id, f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon} ")
                 save_image_to_folder(430,im0, new_path, img_id, f"COG | SOG : {mqtt_test.mymqtt.cog} | {mqtt_test.mymqtt.sog}")
                 save_image_to_folder(470,im0, new_path, img_id, f"Time : {date}")
- 
+                if camsync:
+                    save_image_to_folder(390,frame1[0], new_path, img_id + " 2", f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon} ")
+                    save_image_to_folder(430,frame1[0], new_path, img_id + " 2", f"COG | SOG : {mqtt_test.mymqtt.cog} | {mqtt_test.mymqtt.sog}")
+                    save_image_to_folder(470,frame1[0], new_path, img_id + " 2", f"Time : {date}")
+    
             # Stream results
             im0 = annotator.result()
             frames = None
@@ -421,7 +426,7 @@ async def mains():
 async def inference1():
     global form
     time.sleep(3)
-    asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.5:8080/?action=stream"))
+    asyncio.create_task(run(camsync=True,idx=1, mode=1,source="http://192.168.1.5:8080/?action=stream"))
    
 async def inference2():
     global form

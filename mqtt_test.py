@@ -66,7 +66,7 @@ class myMqtt:
         self.Ki = 0.0
         self.Kd = 0.1
         self.inv = 0
-        self.radius = 1
+        self.radius = 0.6
         self.lat = 0
         self.lon = 0
         self.azm = 0
@@ -105,7 +105,7 @@ class myMqtt:
             res = {
                 "event" : "conf",
                 "kp" : self.Kp,
-                "radius" : 1,
+                "radius" : self.radius,
                 "kd" : self.Kd,
                 "ki" : self.Ki,
 		        #"counter":self.counter,
