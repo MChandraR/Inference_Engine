@@ -290,7 +290,7 @@ class VideoMonitorApp(tk.Tk):
         # Simulasi video update
         self.after(1000, self.update_video_frames)
         
-        # mqtt.setForm(self)
+        mqtt.setForm(self)
         self.mqtt = mqtt
     def speedUp(self):
         if self.mqtt is not None : 
@@ -418,5 +418,5 @@ def launchApp(mqtt):
     app.bind('<KeyPress>', app.onKeyPress)
     app.mainloop()
 
-launchApp(None)
+# launchApp(None)
 

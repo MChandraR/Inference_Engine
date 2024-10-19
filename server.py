@@ -38,7 +38,7 @@ socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading',  max_
 mqtt_test.mqtt(socketio)
 dataKapal = {}
 date = datetime.today().strftime('%d/%m/%Y')
-times = datetime.today().strftime('%h:%m:%s')
+times = datetime.today().strftime('%H:%M:%S')
 days = [ "Mon", "Thus", "Wed", "Thurs", "Fri", "Sat","Sun"]
 day = days[datetime.today().weekday()%len(days)]
 
@@ -77,7 +77,9 @@ def data():
                 "centerLat" : 0,
                 "centerLong" : 0
             },
-            "lintasan" : "B",
+            "position" : mqtt_test.mymqtt.getPosition(),
+            "progress" : f'{mqtt_test.mymqtt.getProgress()}%',
+            "lintasan" :  mqtt_test.mymqtt.lintasan,
             "counter" : mqtt_test.mymqtt.counter,
             "coor" : [mqtt_test.mymqtt.lats, mqtt_test.mymqtt.lons],
             # "gps" : f"{mqtt_test.mymqtt.latDir} {mqtt_test.mymqtt.lat} {mqtt_test.mymqtt.lonDir} {mqtt_test.mymqtt.lon}"

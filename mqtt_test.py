@@ -89,6 +89,16 @@ class myMqtt:
         self.mqttc.on("data", self.on_message)
         self.sendPub()
         #self.sendData()
+        
+    def getPosition(self):
+        if self.counter < self.captureCounter:
+            return "FLOATING BALL"
+        else: return "CAPTURE BOX"
+    
+    def getProgress(self):
+        if self.counter < self.captureCounter:
+            return self.captureCounter/self.counter * 100;
+        else: return abs(self.captureCounter-len(self.lats))/abs(self.counter-len(self.captureCounter)) * 100;
 
     def reset(self):
         self.stopPoint = self.stopPoints

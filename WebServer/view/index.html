@@ -79,7 +79,7 @@
                     </dir>
                 </div>
                 <div class="position-area">
-                    <H2>POSITION : FLOATING BALL</H2>
+                    <H2>POSITION : <span  id="position">FLOATING BALL</span></H2>
                     <hr>
                     SCORE : 100
                     <br><br>
@@ -106,14 +106,15 @@ let cog = document.getElementById("cog");
 let date = document.getElementById("date");
 let gps = document.getElementById("gps");
 let mark = document.getElementById("mark");
+let position = document.getElementById("position");
 let capture = document.getElementById("capture-result");
-
-    
+let mapcon = document.getElementsByClassName("leaflet-map-pane")[0];
+let map = null;
 
 function renderMap(){
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+    //L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    //    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    //}).addTo(map);
     
     //L.marker([-7.2758471,112.7937557]).addTo(map)
     //    .bindPopup('A pretty CSS popup.<br> Easily customizable.')
@@ -124,7 +125,8 @@ function renderMap(){
     //    .openPopup();
 }
 
-
+let cur = 0;
+let posMark = null;
 
 function fetchData(){
     $.ajax({
@@ -133,6 +135,7 @@ function fetchData(){
     }).done(function(e) {
         console.log(e);
         if(e!=null){
+            //if(posMark!=null)L.removeLayer(posMark);
             hdg.innerHTML = e.hdg + "°";
             sog.innerHTML = e.sog + " kn || " + e.sog*1.8 + " Km/h ";
             cog.innerHTML = e.cog + "°";
@@ -140,21 +143,30 @@ function fetchData(){
             date.innerHTML = e.date;
             gps.innerHTML = e.gps.latDir + " " + e.gps.lat + " " + e.gps.lonDir + " " + e.gps.long;
             mark.innerHTML = e.lintasan;
+            position.innerHTML = e.position;
+            if(posMark!=null)map.removeLayer(posMark);
 
             let ver = e.coor ;
-            var map = L.map('map').setView([ver[0][ver.length/2],ver[1][ver.length/2]], 13);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 18
-            }).addTo(map);
+            if(map==null){
+                map = L.map('map').setView([ver[0][ver.length/2],ver[1][ver.length/2]], 20);
+                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+                }).addTo(map);
+            }
 
+
+            posMark = L.marker([ver[0][cur], ver[1][cur]]).addTo(map).openPopup();
+            
+            //L.marker([e.gps.lat, e.gps.long]).addTo(map).openPopup();
+            
             let setPoints = [];
-
+            
+            cur = (cur+1)%ver[0].length;
             for(let i = 0 ; i < ver[0].length ; i++){
                 setPoints.push([ver[0][i], ver[1][i]]);
-                    L.marker([ver[0][i], ver[1][i]]).addTo(map)
-                    .bindPopup('A pretty CSS popup.<br> Easily customizable.')
-                    .openPopup();
+                    //L.marker([ver[0][i], ver[1][i]]).addTo(map)
+                    //.bindPopup('A pretty CSS popup.<br> Easily customizable.')
+                    //.openPopup();
             }
             var polyline = L.polyline(setPoints, {color: 'blue'}).addTo(map);
 
@@ -182,11 +194,12 @@ function getImageLen(){
             capture.append(img);
         }
         idx = e.len;
+        
     });
 }
 
 setInterval(fetchData, 1000);
-setInterval(renderMap, 3000);
+setInterval(renderMap, 1000);
 setInterval(getImageLen, 1000);
 </script>
 </html>
