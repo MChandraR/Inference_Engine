@@ -8,11 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/leaflet.css" />
     <script src="js/leaflet.js"></script>
-    <script src="js/maptiler-sdk.umd.js"></script>
-    <link href="css/maptiler-sdk.css" rel="stylesheet" />
-    <script src="js/leaflet-maptilersdk.js"></script>    <script src="js/jquery-3.7.1.min.js"></script>
-
-    
+    <script src="js/jquery-3.7.1.min.js"></script>
 </head>
 <body>
     <nav class="navheader">
@@ -85,7 +81,7 @@
                 <div class="position-area">
                     <H2>POSITION : <span  id="position">FLOATING BALL</span></H2>
                     <hr>
-                    PROGRESS : <span  id="progress">%</span>
+                    SCORE : <span  id="progress">FLOATING BALL</span>
                     <br><br>
                 </div>
                 <div class="lintasan-area">
@@ -149,16 +145,18 @@ function fetchData(){
             gps.innerHTML = e.gps.latDir + " " + e.gps.lat + " " + e.gps.lonDir + " " + e.gps.long;
             mark.innerHTML = e.lintasan;
             position.innerHTML = e.position;
-            progress.innerHTML = parseFloat(e.progress).toFixed(2) + "%";
+            progress.innerHTML = parseFloat(e.progress).toFixed(2);
             if(posMark!=null)map.removeLayer(posMark);
 
             let ver = e.coor ;
             if(map==null){
-                map = L.map('map').setView([ver[0][ver.length/2],ver[1][ver.length/2]], 18);
-                L.maptilerLayer({
-                    apiKey: "6yKfhFPpXQXNs92rSrUl",
-                    style: "satellite", //optional
-                  }).addTo(map);
+                map = L.map('map').setView([ver[0][ver.length/2],ver[1][ver.length/2]], 19);
+                L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.{ext}', {
+                    minZoom: 0,
+                    maxZoom: 19,
+                    attribution: '&copy; CNES, Distribution Airbus DS, © Airbus DS, © PlanetObserver (Contains Copernicus Data) | &copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    ext: 'jpg'
+                }).addTo(map);
             }
 
 
@@ -178,7 +176,7 @@ function fetchData(){
             var polyline = L.polyline(setPoints, {color: 'blue'}).addTo(map);
 
             // Fit peta sesuai dengan bounding box dari polyline
-            //map.fitBounds(polyline.getBounds());
+            map.fitBounds(polyline.getBounds());
         }
     });
 }

@@ -85,7 +85,7 @@
                 <div class="position-area">
                     <H2>POSITION : <span  id="position">FLOATING BALL</span></H2>
                     <hr>
-                    PROGRESS : <span  id="progress">%</span>
+                    SCORE : <span  id="progress">FLOATING BALL</span>
                     <br><br>
                 </div>
                 <div class="lintasan-area">
@@ -149,7 +149,7 @@ function fetchData(){
             gps.innerHTML = e.gps.latDir + " " + e.gps.lat + " " + e.gps.lonDir + " " + e.gps.long;
             mark.innerHTML = e.lintasan;
             position.innerHTML = e.position;
-            progress.innerHTML = parseFloat(e.progress).toFixed(2) + "%";
+            progress.innerHTML = parseFloat(e.progress).toFixed(2);
             if(posMark!=null)map.removeLayer(posMark);
 
             let ver = e.coor ;

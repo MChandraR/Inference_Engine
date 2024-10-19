@@ -97,7 +97,7 @@ class myMqtt:
     
     def getProgress(self):
         if self.counter < self.captureCounter:
-            return self.captureCounter/self.counter * 100;
+            return self.counter/self.captureCounter* 100;
         else: return abs(self.captureCounter-len(self.lats))/abs(self.counter-len(self.captureCounter)) * 100;
 
     def reset(self):
