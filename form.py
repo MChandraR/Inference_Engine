@@ -3,7 +3,7 @@ from tkinter import  ttk
 from PIL import ImageTk, Image
 from tkinter import StringVar
 import time
-from threading import Thread
+from threading import Thread,Timer
 import json
 
 import cv2
@@ -160,22 +160,25 @@ class VideoMonitorApp(tk.Tk):
         self.control_frame.grid(row=1, column=2, padx=10, pady=10, sticky="nsew", rowspan=2)
         
         self.update_counter_button = tk.Button(self.control_frame, text="Counter Plus", command=self.update_counter_plus)
-        self.update_counter_button.grid(row=8, column=0, padx=5, pady=5, sticky="e", columnspan=2)
+        self.update_counter_button.grid(row=8, column=0, padx=5, pady=5, sticky="w", columnspan=2)
         
         self.update_position_button = tk.Button(self.control_frame, text="Counter Min", command=self.update_counter_min)
-        self.update_position_button.grid(row=8, column=2, padx=5, pady=5, sticky="w")
+        self.update_position_button.grid(row=8, column=0, padx=5, pady=5, sticky="e", columnspan = 2)
         
         self.inverse = tk.Button(self.control_frame, text="Inverse", command=self.inverse)
         self.inverse.grid(row=8, column=3, padx=5, pady=5, sticky="w")
         
         self.upspeed = tk.Button(self.control_frame, text="Speed Up", command=self.speedUp)
-        self.upspeed.grid(row=9, column=2, padx=5, pady=5, sticky="w")
+        self.upspeed.grid(row=9, column=0, padx=5, pady=5, sticky="w")
         
         self.downspeed = tk.Button(self.control_frame, text="Speed Down", command=self.speedDown)
         self.downspeed.grid(row=9, column=0, padx=5, pady=5, sticky="e")
         
         self.motor_set = tk.Button(self.control_frame, text="Motor Set", command=self.setMotor)
         self.motor_set.grid(row=10, column=0, padx=5, pady=5, sticky="w")
+        
+        self.reset_round = tk.Button(self.control_frame, text="Reset", command=self.resetRound)
+        self.reset_round.grid(row=10, column=0, padx=5, pady=5, sticky="e")
         
         #Informasi lat dan long
         self.infLabel = tk.Label(self.control_frame, text="Nilai Lat & Long:")
@@ -276,6 +279,7 @@ class VideoMonitorApp(tk.Tk):
         self.log_res_value.grid(row=2, column=0, padx=5, pady=5, sticky="w")
         
         # Counter dan posisi default
+        self.timer = 3
         self.counter = 0
         self.x_position = 0
         self.y_position = 0
@@ -286,11 +290,21 @@ class VideoMonitorApp(tk.Tk):
         # Simulasi video update
         self.after(1000, self.update_video_frames)
         
-        mqtt.setForm(self)
+        # mqtt.setForm(self)
         self.mqtt = mqtt
     def speedUp(self):
         if self.mqtt is not None : 
             self.mqtt.speed += 10
+            
+    def setTimeOut(self):
+        self.timer = 3
+    
+    def resetRound(self):
+        self.timer -= 1
+        tmr = Timer(3,self.setTimeOut, None)
+        tmr.start()
+        if self.mqtt is not None and self.timer <= 0: 
+            self.mqtt.reset()
             
     def saveLatLon(self):
         if self.mqtt is not None or True:
@@ -404,5 +418,5 @@ def launchApp(mqtt):
     app.bind('<KeyPress>', app.onKeyPress)
     app.mainloop()
 
-# launchApp(None)
+launchApp(None)
 

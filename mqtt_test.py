@@ -9,6 +9,7 @@ import asyncio
 class myMqtt:
     def __init__(self, socket) -> None:
         self.counter = 1
+        self.lintasan = 'B'
         self.lats = [
                 0.868596167,
                 0.868623167,
@@ -33,7 +34,8 @@ class myMqtt:
         self.Lats = []
         self.captureCounter = 9
         self.inverseCounter = 7
-        self.stopPoint = [15]
+        self.stopPoints = [15]
+        self.stopPoint = self.stopPoints
 
         self.lons = [
             104.4594112,
@@ -56,6 +58,7 @@ class myMqtt:
         ]
         
         self.inversed = False
+        self.inv = 0 if self.lintasan == 'B' else 1
         
         self.form = None
         self.speed = 1650
@@ -64,7 +67,6 @@ class myMqtt:
         self.Kp = 1.0
         self.Ki = 0.0
         self.Kd = 0.1
-        self.inv = 0
         self.radius = 0.8
         self.lat = 0
         self.lon = 0
@@ -87,6 +89,10 @@ class myMqtt:
         self.mqttc.on("data", self.on_message)
         self.sendPub()
         #self.sendData()
+
+    def reset(self):
+        self.stopPoint = self.stopPoints
+        self.inversed = False
 
     def turnOnMotor(self):
         self.motor = 1

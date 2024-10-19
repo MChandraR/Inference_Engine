@@ -38,6 +38,7 @@ socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading',  max_
 mqtt_test.mqtt(socketio)
 dataKapal = {}
 date = datetime.today().strftime('%d/%m/%Y')
+times = datetime.today().strftime('%h:%m:%s')
 days = [ "Mon", "Thus", "Wed", "Thurs", "Fri", "Sat","Sun"]
 day = days[datetime.today().weekday()%len(days)]
 
@@ -270,6 +271,8 @@ async def run(
         with dt[2]:
             pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
 	
+        frame1[idx] = im0   
+
         # Second-stage classifier (optional) hjkhkjhkjh
         # pred = utils.general.apply_classifier(pred, classifier_model, im, im0s)
         for i, det in enumerate(pred):  # per image
@@ -354,13 +357,13 @@ async def run(
             if save_box and abs(time.time() - boxTime) > 1 and mqtt_test.mymqtt.counter >= mqtt_test.mymqtt.captureCounter:
                 img_id += 1
                 boxTime = time.time()
-                save_image_to_folder(390,im0, new_path, img_id, f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon} ")
-                save_image_to_folder(430,im0, new_path, img_id, f"COG | SOG : {mqtt_test.mymqtt.cog} | {mqtt_test.mymqtt.sog}")
-                save_image_to_folder(470,im0, new_path, img_id, f"Time : {date}")
+                save_image_to_folder(430,frame1[idx], new_path, img_id, f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon} ")
+                save_image_to_folder(450,frame1[idx], new_path, img_id, f"COG & SOG : {mqtt_test.mymqtt.cog}° | {mqtt_test.mymqtt.sog}kn")
+                save_image_to_folder(470,frame1[idx], new_path, img_id, f"Time : {day} {date} {times}")
                 if camsync:
-                    save_image_to_folder(390,frame1[0], new_path, img_id + " 2", f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon} ")
-                    save_image_to_folder(430,frame1[0], new_path, img_id + " 2", f"COG | SOG : {mqtt_test.mymqtt.cog} | {mqtt_test.mymqtt.sog}")
-                    save_image_to_folder(470,frame1[0], new_path, img_id + " 2", f"Time : {date}")
+                    save_image_to_folder(430,frame1[0], new_path, img_id + " 2", f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon} ")
+                    save_image_to_folder(450,frame1[0], new_path, img_id + " 2", f"COG & SOG : {mqtt_test.mymqtt.cog}° | {mqtt_test.mymqtt.sog}kn")
+                    save_image_to_folder(470,frame1[0], new_path, img_id + " 2", f"Time : {day} {date} {times}")
     
             # Stream results
             im0 = annotator.result()
@@ -381,7 +384,6 @@ async def run(
 
                     if mode == 0 :cv2.putText(im0,pilot, (20,50), 0, 2, (255,0,0) , thickness=2, lineType=cv2.LINE_AA)
 
-                    frame1[idx] = im0   
                     form.app.display_frame(frames,im0)
 
             # Save results (image with detections)
