@@ -162,8 +162,9 @@ function fetchData(){
             }
 
 
-            posMark = L.marker([ver[0][cur], ver[1][cur]]).addTo(map).openPopup();
-            
+            posMark = L.marker([e.gps.lat, e.gps.long]).addTo(map).openPopup();
+            //L.marker([ver[0][cur], ver[1][cur]]).addTo(map).openPopup();
+
             //L.marker([e.gps.lat, e.gps.long]).addTo(map).openPopup();
             
             let setPoints = [];

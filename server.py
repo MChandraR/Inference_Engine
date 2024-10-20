@@ -273,7 +273,7 @@ async def run(
         with dt[2]:
             pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
 	
-        frame1[idx] = im0   
+          
 
         # Second-stage classifier (optional) hjkhkjhkjh
         # pred = utils.general.apply_classifier(pred, classifier_model, im, im0s)
@@ -281,6 +281,7 @@ async def run(
             seen += 1
             save_box = False
             p, im0, frame = path[i], im0s[i].copy(), dataset.count
+            frame1[idx] = im0 
             s += f"{i}: "
             box = (0,0), (0,0)
             ada = False
@@ -428,18 +429,15 @@ async def mains():
         print("Error ")
         
 async def inference1():
-    return
     global form
     time.sleep(3)
     asyncio.create_task(run(camsync=True,idx=1, mode=1,source="http://192.168.1.5:8080/?action=stream"))
    
 async def inference2():
-    return
     global form
     asyncio.create_task(run(idx=2,source="http://192.168.1.5:8081/?action=stream"))
     
 async def inference3():
-    return
     global form
     time.sleep(6)
     asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.3:8080/?action=stream"))
