@@ -361,12 +361,12 @@ async def run(
             if save_box and abs(time.time() - boxTime) > 1 and mqtt_test.mymqtt.counter >= mqtt_test.mymqtt.captureCounter:
                 img_id += 1
                 boxTime = time.time()
-                save_image_to_folder(430,frame1[idx], new_path, img_id, f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon} ")
-                save_image_to_folder(450,frame1[idx], new_path, img_id, f"COG & SOG : {mqtt_test.mymqtt.cog}° | {mqtt_test.mymqtt.sog}kn")
+                save_image_to_folder(410,frame1[idx], new_path, img_id, f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon} ")
+                save_image_to_folder(440,frame1[idx], new_path, img_id, f"COG & SOG : {mqtt_test.mymqtt.cog}° | {mqtt_test.mymqtt.sog}kn")
                 save_image_to_folder(470,frame1[idx], new_path, img_id, f"Time : {day} {date} {times}")
                 if camsync:
-                    save_image_to_folder(430,frame1[1], new_path, img_id + " 2", f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon} ")
-                    save_image_to_folder(450,frame1[1], new_path, img_id + " 2", f"COG & SOG : {mqtt_test.mymqtt.cog}° | {mqtt_test.mymqtt.sog}kn")
+                    save_image_to_folder(410,frame1[1], new_path, img_id + " 2", f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon} ")
+                    save_image_to_folder(440,frame1[1], new_path, img_id + " 2", f"COG & SOG : {mqtt_test.mymqtt.cog}° | {mqtt_test.mymqtt.sog}kn")
                     save_image_to_folder(470,frame1[1], new_path, img_id + " 2", f"Time : {day} {date} {times}")
     
             # Stream results
