@@ -365,9 +365,9 @@ async def run(
                 save_image_to_folder(450,frame1[idx], new_path, img_id, f"COG & SOG : {mqtt_test.mymqtt.cog}° | {mqtt_test.mymqtt.sog}kn")
                 save_image_to_folder(470,frame1[idx], new_path, img_id, f"Time : {day} {date} {times}")
                 if camsync:
-                    save_image_to_folder(430,frame1[0], new_path, img_id + " 2", f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon} ")
-                    save_image_to_folder(450,frame1[0], new_path, img_id + " 2", f"COG & SOG : {mqtt_test.mymqtt.cog}° | {mqtt_test.mymqtt.sog}kn")
-                    save_image_to_folder(470,frame1[0], new_path, img_id + " 2", f"Time : {day} {date} {times}")
+                    save_image_to_folder(430,frame1[1], new_path, img_id + " 2", f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon} ")
+                    save_image_to_folder(450,frame1[1], new_path, img_id + " 2", f"COG & SOG : {mqtt_test.mymqtt.cog}° | {mqtt_test.mymqtt.sog}kn")
+                    save_image_to_folder(470,frame1[1], new_path, img_id + " 2", f"Time : {day} {date} {times}")
     
             # Stream results
             im0 = annotator.result()
@@ -432,7 +432,7 @@ async def mains():
 async def inference1():
     global form
     time.sleep(3)
-    asyncio.create_task(run(camsync=True,idx=1, mode=1,source="http://192.168.1.5:8080/?action=stream"))
+    asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.5:8080/?action=stream"))
    
 async def inference2():
     global form
@@ -441,7 +441,7 @@ async def inference2():
 async def inference3():
     global form
     time.sleep(6)
-    asyncio.create_task(run(idx=3,mode=1,source="http://192.168.1.3:8080/?action=stream"))
+    asyncio.create_task(run(camsync=True,idx=3,mode=1,source="http://192.168.1.3:8080/?action=stream"))
 
 def start1():
     asyncio.run(inference1())
