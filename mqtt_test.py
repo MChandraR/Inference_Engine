@@ -67,8 +67,8 @@ class myMqtt:
         self.speedKm = 0
 
         self.Kp = 1.0
-        self.Ki = 0.0
-        self.Kd = 0.1
+        self.Ki = 0.05
+        self.Kd = 0.02
         self.radius = 0.8
         self.lat = 0
         self.lon = 0
@@ -91,6 +91,13 @@ class myMqtt:
         self.mqttc.on("data", self.on_message)
         self.sendPub()
         #self.sendData()
+        
+    def loadConf(self):
+        with open("conf.json", "r") as data:
+            conf = json.loads(data)
+            self.Kp = float(conf["kp"])
+            self.Ki = float(conf["ki"])
+            self.Kd = float(conf["kd"])
         
     def getPosition(self):
         if self.counter < self.captureCounter:

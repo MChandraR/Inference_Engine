@@ -407,6 +407,9 @@ class VideoMonitorApp(tk.Tk):
         if event.char.lower() == "d":
             print("Kapal kekanan")
             if self.mqtt is not None : self.mqtt.mqttc.emit("belok",{"event" : "belok","angle" : 10})
+        if event.char.lower() == "x":
+            self.mqtt.loadConf()
+            print("Load Konf")
         if event.char.lower() == " ":
             print("Kapal stop")
             if self.mqtt is not None : self.mqtt.speed = 1550
