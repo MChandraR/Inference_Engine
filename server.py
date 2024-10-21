@@ -247,6 +247,8 @@ async def run(
     prevAngle = 0
 
     for path, im, im0s, vid_cap, s in dataset: 
+        frame1[idx] = im0s[0]
+
         with dt[0]:
             im = torch.from_numpy(im).to(model.device)
             im = im.half() if model.fp16 else im.float()  # uint8 to fp16/32
@@ -281,7 +283,6 @@ async def run(
             seen += 1
             save_box = False
             p, im0, frame = path[i], im0s[i].copy(), dataset.count
-            frame1[idx] = im0 
             s += f"{i}: "
             box = (0,0), (0,0)
             ada = False
@@ -340,14 +341,14 @@ async def run(
                     if pilot == "MANUAL" : 
                         pilot = "AUTO" if (abs(int(box[0]) - int(box[2])) > 25) else "MANUAL"
                     if mode == 0 and names[c] == ("green_buoy" if  inValue == 0 else "red_buoy") and pilot == "AUTO":
-                        if int(box[2] ) > 200 and abs(int(box[0]) - int(box[2])) > size[("green_buoy" if  inValue == 0 else "red_buoy")] : 
+                        if int(box[2] ) >= 175 and abs(int(box[0]) - int(box[2])) > size[("green_buoy" if  inValue == 0 else "red_buoy")] : 
                            size[("green_buoy" if  inValue == 0 else "red_buoy")] = abs(int(box[0]) - int(box[2]))
-                           prevX = max(0, int(box[2] ) - 200)
-                           targetAngle = -45
+                           prevX = max(0, int(box[2] ) - 175)
+                           targetAngle = -45 if (abs(int(box[0]) - int(box[2])) > 50) else -15
                     if mode == 0 and names[c] == ("green_buoy" if  inValue == 1 else "red_buoy") and pilot == "AUTO":
-                        if int(box[0] ) < 440 and abs(abs(int(box[0]) - int(box[2]))) > size[("green_buoy" if  inValue == 1 else "red_buoy")]: 
+                        if int(box[0] ) <= 465 and abs(abs(int(box[0]) - int(box[2]))) > size[("green_buoy" if  inValue == 1 else "red_buoy")]: 
                            size[("green_buoy" if  inValue == 1 else "red_buoy")] = abs(int(box[0]) - int(box[2]))
-                           targetAngle = 45 if max(500-int(box[0]), 0) > prevX else targetAngle
+                           targetAngle = (45 if (abs(int(box[0]) - int(box[2])) > 50) else 15) if max(465-int(box[0]), 0) > prevX else targetAngle
                     print( (int(box[0]), int(box[1])), (int(box[2]), int(box[3])))
             
             if prevAngle is not targetAngle and mode==0 and abs(curTime - time.time()) > 0.1 and useAI:
