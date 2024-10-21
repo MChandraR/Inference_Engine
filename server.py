@@ -431,14 +431,17 @@ async def mains():
         
 async def inference1():
     global form
+    return
     time.sleep(3)
     asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.5:8080/?action=stream"))
    
 async def inference2():
+    return
     global form
     asyncio.create_task(run(idx=2,source="http://192.168.1.5:8081/?action=stream"))
     
 async def inference3():
+    return
     global form
     time.sleep(6)
     asyncio.create_task(run(camsync=True,idx=3,mode=1,source="http://192.168.1.3:8080/?action=stream"))
