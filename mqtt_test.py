@@ -5,9 +5,11 @@ import time
 import paho.mqtt.client as mqtt
 from threading import Thread,Timer
 import asyncio
+from utils.folder import save_to_excel
 
 class myMqtt:
     def __init__(self, socket) -> None:
+        self.data = []
         self.counter = 1
         self.lintasan = 'A'
         self.lats = [
@@ -139,6 +141,8 @@ class myMqtt:
                 "motor" : self.motor,
                 "speed" : self.speed if self.counter < len(self.lats) else 1550
             }
+            self.data.extend([self.lat,self.lon])
+            save_to_excel(self.data)
             if self.counter in self.stopPoint and self.motor == 1:
                 self.stopPoint.remove(self.counter)
                 self.motor = 0

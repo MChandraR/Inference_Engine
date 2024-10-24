@@ -25,7 +25,7 @@ def process_text_files_in_folder(folder_path, target_char, replacement_char):
 
 # Contoh penggunaan:
 folder_path = 'test/labels'  # Ganti dengan path folder yang sesuai
-target_char = '1'  # Karakter yang akan diganti
-replacement_char = '2'  # Karakter pengganti
+target_char = '0'  # Karakter yang akan diganti
+replacement_char = '3'  # Karakter pengganti
 
 process_text_files_in_folder(folder_path, target_char, replacement_char)

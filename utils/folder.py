@@ -1,5 +1,6 @@
 import os
 import cv2
+import pandas
 
 def create_folder_in_public(public_dir='public/captures'):
     # Jika direktori 'public' belum ada, buat terlebih dahulu
@@ -41,3 +42,9 @@ def get_image_path(folder_id, image_id):
     else:
         return None
 
+def save_to_excel(data):
+    df  = pandas.DataFrame(data, columns=["Time", "HDG", "SOG", "COG", "DAY", "DATE","Lat Dir", "Lat", "Lon Dir", "Lon"])
+    df.index += 1
+    df.index.name = "No"
+    df.to_excel("output.xlsx", sheet_name="Sheet 1", index=True)
+    return print("Berhasil mengambil data")
