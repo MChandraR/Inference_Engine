@@ -47,4 +47,5 @@ def save_to_excel(data):
     df.index += 1
     df.index.name = "No"
     df.to_excel("output.xlsx", sheet_name="Sheet 1", index=True)
-    return print("Berhasil mengambil data")
+    print("Berhasil mengambil data")
+    return

@@ -16,7 +16,7 @@ import json
 import form 
 import time
 import socketio
-from utils.folder import create_folder_in_public, save_image_to_folder, get_image_path
+from utils.folder import create_folder_in_public, save_image_to_folder, get_image_path, save_to_excel
 import asyncio
 import pathlib
 from datetime import datetime
@@ -179,7 +179,7 @@ def stream_video(url, window_name):
                 
     cv2.destroyAllWindows()
 
-weights="./best.pt"  # model path or triton URL
+weights="./besto.pt"  # model path or triton URL
 data="./datasets/box/data.yaml" # dataset.yaml pat
 
 device = select_device("")
@@ -431,17 +431,14 @@ async def mains():
         
 async def inference1():
     global form
-    return
     time.sleep(3)
     asyncio.create_task(run(idx=1, mode=1,source="http://192.168.1.5:8080/?action=stream"))
    
 async def inference2():
-    return
     global form
     asyncio.create_task(run(idx=2,source="http://192.168.1.5:8081/?action=stream"))
     
 async def inference3():
-    return
     global form
     time.sleep(6)
     asyncio.create_task(run(camsync=True,idx=3,mode=1,source="http://192.168.1.3:8080/?action=stream"))

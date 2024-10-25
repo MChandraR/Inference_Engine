@@ -11,7 +11,7 @@ class myMqtt:
     def __init__(self, socket) -> None:
         self.data = []
         self.counter = 1
-        self.lintasan = 'A'
+        self.lintasan = 'B'
         self.lats = [
                 0.868404,
                 0.868457667,
@@ -141,8 +141,7 @@ class myMqtt:
                 "motor" : self.motor,
                 "speed" : self.speed if self.counter < len(self.lats) else 1550
             }
-            self.data.extend([self.lat,self.lon])
-            save_to_excel(self.data)
+           
             if self.counter in self.stopPoint and self.motor == 1:
                 self.stopPoint.remove(self.counter)
                 self.motor = 0
@@ -163,6 +162,8 @@ class myMqtt:
         self.cog = data['adjHeading']
         # self.speedKm = data["speedKm"]
         self.counter = data["counter"]
+        
+       
         
         if self.counter >= self.inverseCounter and not self.inversed:
             self.inv  = not self.inv
@@ -185,7 +186,8 @@ class myMqtt:
             self.form.lat5Value.set(str(self.lats[4]))
             self.form.lat6Value.set(str(self.lats[5]))
             
-        
+        self.data.extend(["wakti",self.cog,self.sog,"Sun", "23",self.latDir, self.self.lat, self.lonDir,self.lon])
+        save_to_excel(self.data)
   
 
     def on_log(self, mqttc, obj, level, string):
