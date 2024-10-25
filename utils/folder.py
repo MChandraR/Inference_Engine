@@ -1,6 +1,7 @@
 import os
 import cv2
 import pandas
+from datetime import datetime
 
 def create_folder_in_public(public_dir='public/captures'):
     # Jika direktori 'public' belum ada, buat terlebih dahulu
@@ -42,10 +43,23 @@ def get_image_path(folder_id, image_id):
     else:
         return None
 
+datas = []
+times = datetime.now().strftime('%H:%M:%S.%f')[:-3]
+timess = datetime.now().strftime('%d-%m-%Y %H-%M-%S-%f')[:-3]
+
 def save_to_excel(data):
-    df  = pandas.DataFrame(data, columns=["Time", "HDG", "SOG", "COG", "DAY", "DATE","Lat Dir", "Lat", "Lon Dir", "Lon"])
+    global timess
+    df  = pandas.DataFrame(data, columns=["DAY", "DATE", "TIME", "HDG", "SOG", "COG", "Lat Dir", "Lat", "Lon Dir", "Lon"])
     df.index += 1
     df.index.name = "No"
-    df.to_excel("output.xlsx", sheet_name="Sheet 1", index=True)
+    df.to_excel(timess+".xlsx", sheet_name="Sheet 1", index=True)
     print("Berhasil mengambil data")
     return
+
+
+# datas.append([times,2,3,4,5,6,7,8,9,0])
+# datas.append([times,2,3,4,5,6,7,8,9,0])
+# datas.append([times,2,3,4,5,6,7,8,9,0])
+# datas.append([times,2,3,4,5,6,7,8,9,0])
+
+# save_to_excel(datas)

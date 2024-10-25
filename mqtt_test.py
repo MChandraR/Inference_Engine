@@ -5,15 +5,46 @@ import time
 import paho.mqtt.client as mqtt
 from threading import Thread,Timer
 import asyncio
+from datetime import datetime
 from utils.folder import save_to_excel
 
 class myMqtt:
     def __init__(self, socket) -> None:
+<<<<<<< HEAD
         self.data = []
         self.counter = 1
         self.lintasan = 'A'
         self.lats = [-7.332006, -7.331980333, -7.331957333, -7.331877667, -7.331895333, -7.3318965, -7.331901333, -7.331905667, -7.331899667, -7.331931, -7.331958333, -7.331994667, -7.332012, -7.332006667, -7.332042167, -7.332045, -7.332005333, -7.332063333]
+=======
+        self.datas = []
+        self.counter = 0
+        self.lintasan = 'B'
+        self.date = datetime.today().strftime('%d/%m/%Y')
+        self.days = [ "Mon", "Thus", "Wed", "Thurs", "Fri", "Sat","Sun"]
+        self.day = self.days[datetime.today().weekday()%len(self.days)]
+        self.lats = [
+                0.868404,
+                0.868457667,
+                0.868474667,
+                0.868554333,
+                0.868582,
+                0.868603833,
+                0.868637833,
+                0.868687333,
+                0.8686555,
+                0.868617333,
+                0.868567,
+                0.868578,
+                0.868485167,
+                0.868523,
+                0.868493,
+                0.868466167,
+                0.868396833,
+                0.868327
+            ]
+>>>>>>> e0d5984b5cffd10f52a227f1ae20f3c9d175a9e7
         
+        self.actSpeed = 1700
         self.Lons = []
         self.Lats = []
         self.captureCounter = 12
@@ -27,23 +58,24 @@ class myMqtt:
         self.inv = 0 if self.lintasan == 'B' else 1
         
         self.form = None
-        self.speed = 1650
+        self.speed = self.actSpeed
         self.speedKm = 0
+        
 
         self.Kp = 1.0
         self.Ki = 0.0
         self.Kd = 0.1
-        self.radius = 0.8
+        self.radius = 0.9
         self.lat = 0
         self.lon = 0
         self.azm = 0
-        self.speed = 1650
+        self.speed = self.actSpeed
         self.latDir = 0
         self.lonDir = 0
         self.sog = 0
         self.cog = 0
         self.azimuth = 0
-
+        self.distance = 0
         self.setpoint = 0
         self.motor = 0
         self.inputs = 0
@@ -54,6 +86,10 @@ class myMqtt:
         self.mqttc = socket
         self.mqttc.on("data", self.on_message)
         self.sendPub()
+        self.distanceCounter = 0
+        self.tempDistance = 0
+        self.distanceTime = time.time()
+        self.distanceValid = True
         #self.sendData()
         
     def loadConf(self):
@@ -74,6 +110,7 @@ class myMqtt:
         else: return abs(self.counter-self.captureCounter)/abs(self.captureCounter-len(self.lats)) * 100;
 
     def reset(self):
+        self.inv = 0 if self.lintasan == 'B' else 1
         self.stopPoint = self.stopPoints
         self.inversed = False
 
@@ -124,9 +161,26 @@ class myMqtt:
         self.cog = data['adjHeading']
         # self.speedKm = data["speedKm"]
         self.counter = data["counter"]
+        if data["distance"]: self.distance = data["distance"]
         
-       
+        if self.distanceCounter == 0:
+            self.distanceTime = time.time()
+            if data["distance"]: self.tempDistance = data["distance"]
+            
         
+        if self.distanceCounter >= 5 and abs(self.tempDistance - self.distance) <= .5 :
+            if self.counter > 0:
+                self.speed = 1350
+                self.distanceValid = False
+                task = Timer(3,self.motorMaju, None)
+                task.start()
+        
+        if self.distanceValid : self.distanceCounter += 1
+        self.distanceCounter %= 6
+
+    
+        
+            
         if self.counter >= self.inverseCounter and not self.inversed:
             self.inv  = not self.inv
             self.inversed = True
@@ -148,8 +202,21 @@ class myMqtt:
             self.form.lat5Value.set(str(self.lats[4]))
             self.form.lat6Value.set(str(self.lats[5]))
             
-        # self.data.extend(["wakti","0",self.cog,self.sog,"Sun", "23",self.latDir, self.lat, self.lonDir,self.lon])
-        # save_to_excel(self.data)
+        times = datetime.now().strftime('%H:%M:%S.%f')[:-3]
+
+        self.datas.append([self.day, self.date, times,self.azimuth,self.sog,self.cog,self.latDir, self.lat, self.lonDir,self.lon])
+        save_to_excel(self.datas)
+        
+    def motorMaju(self):
+        self.speed = self.actSpeed
+        self.distanceValid  = True
+        
+    def loadSetPoint(self):
+        with open('coor.json', 'r') as jsons:
+            dataPoint = json.load(jsons)
+            self.lats = dataPoint["lats"]
+            self.lons = dataPoint["lons"]
+            print("Loaded")
   
 
     def on_log(self, mqttc, obj, level, string):
