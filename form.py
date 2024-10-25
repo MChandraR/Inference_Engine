@@ -368,13 +368,11 @@ class VideoMonitorApp(tk.Tk):
         if self.mqtt is not None: self.mqtt.motor = self.motor
     
     def update_counter_plus(self):
-        self.mqtt.counter +=1
         self.counter_value.set(str(self.mqtt.counter))
         if self.mqtt is not None:
             self.mqtt.mqttc.emit("setCounter",{"event":"sc","value" : self.mqtt.counter + 1})
         
     def update_counter_min(self):
-        self.mqtt.counter -=1
         self.counter_value.set(str(self.mqtt.counter))
         if self.mqtt is not None:
             self.mqtt.mqttc.emit("setCounter",{"event":"sc","value" :self.mqtt.counter - 1 })

@@ -16,7 +16,7 @@ import json
 import form 
 import time
 import socketio
-from utils.folder import create_folder_in_public, save_image_to_folder, get_image_path, save_to_excel
+from utils.folder import create_folder_in_public, save_image_to_folder, get_image_path
 import asyncio
 import pathlib
 from datetime import datetime
@@ -179,7 +179,7 @@ def stream_video(url, window_name):
                 
     cv2.destroyAllWindows()
 
-weights="./besto.pt"  # model path or triton URL
+weights="./best.pt"  # model path or triton URL
 data="./datasets/box/data.yaml" # dataset.yaml pat
 
 device = select_device("")
@@ -247,7 +247,7 @@ async def run(
     prevAngle = 0
 
     for path, im, im0s, vid_cap, s in dataset: 
-        frame1[idx] = im0s[0]
+        
 
         with dt[0]:
             im = torch.from_numpy(im).to(model.device)
@@ -283,6 +283,7 @@ async def run(
             seen += 1
             save_box = False
             p, im0, frame = path[i], im0s[i].copy(), dataset.count
+            frame1[idx] = im0s[i]
             s += f"{i}: "
             box = (0,0), (0,0)
             ada = False
@@ -453,7 +454,7 @@ def start2():
 def start3():  
     asyncio.run(inference3())
 
-    #run(idx=3,mode=1,source="http://192.168.1.3:8080/?action=stream")
+    #run(idx=3,mode=1,source="http://192.168.1.4:8080/?action=stream")
     
 def startServer():
     app.run(host='0.0.0.0', port=5000)
