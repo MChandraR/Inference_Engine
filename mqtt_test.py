@@ -186,8 +186,8 @@ class myMqtt:
             self.form.lat5Value.set(str(self.lats[4]))
             self.form.lat6Value.set(str(self.lats[5]))
             
-        self.data.extend(["wakti",self.cog,self.sog,"Sun", "23",self.latDir, self.self.lat, self.lonDir,self.lon])
-        save_to_excel(self.data)
+        # self.data.extend(["wakti","0",self.cog,self.sog,"Sun", "23",self.latDir, self.lat, self.lonDir,self.lon])
+        # save_to_excel(self.data)
   
 
     def on_log(self, mqttc, obj, level, string):
