@@ -101,6 +101,7 @@ class myMqtt:
         self.distanceCounter = 0
         self.tempDistance = 0
         self.distanceTime = time.time()
+        self.distanceValid = True
         #self.sendData()
         
     def loadConf(self):
@@ -182,10 +183,11 @@ class myMqtt:
         if self.distanceCounter >= 5 and abs(self.tempDistance - self.distance) <= .5 :
             if self.counter > 0:
                 self.speed = 1350
-                task = Timer(3,self.motorMaju)
+                self.distanceValid = False
+                task = Timer(3,self.motorMaju, None)
                 task.start()
         
-        self.distanceCounter += 1
+        if self.distanceValid : self.distanceCounter += 1
         self.distanceCounter %= 6
 
     
@@ -219,6 +221,7 @@ class myMqtt:
         
     def motorMaju(self):
         self.speed = self.actSpeed
+        self.distanceValid  = True
         
     def loadSetPoint(self):
         with open('coor.json', 'r') as jsons:
