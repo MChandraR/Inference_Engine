@@ -38,7 +38,7 @@ socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading',  max_
 mqtt_test.mqtt(socketio)
 dataKapal = {}
 date = datetime.today().strftime('%d/%m/%Y')
-times = datetime.today().strftime('%H:%M:%S')
+times = datetime.now().strftime('%H:%M:%S.%f')[:-3]
 days = [ "Mon", "Thus", "Wed", "Thurs", "Fri", "Sat","Sun"]
 day = days[datetime.today().weekday()%len(days)]
 
@@ -359,6 +359,7 @@ async def run(
                 })
             prevAngle = targetAngle
             if save_box and abs(time.time() - boxTime) > 1 and mqtt_test.mymqtt.counter >= mqtt_test.mymqtt.captureCounter:
+                times = datetime.now().strftime('%H:%M:%S.%f')[:-3]
                 img_id += 1
                 boxTime = time.time()
                 save_image_to_folder(410,frame1[idx], new_path, img_id, f"Lat & Lon : {mqtt_test.mymqtt.lat} | {mqtt_test.mymqtt.lon} ")

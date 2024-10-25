@@ -305,6 +305,7 @@ class VideoMonitorApp(tk.Tk):
         tmr.start()
         if self.mqtt is not None and self.timer <= 0: 
             self.mqtt.reset()
+            self.mqtt.loadSetPoint()
             
     def saveLatLon(self):
         if self.mqtt is not None or True:
@@ -399,11 +400,11 @@ class VideoMonitorApp(tk.Tk):
             print("Kapal ke kiri")
             if self.mqtt is not None : self.mqtt.mqttc.emit("belok",{"event" : "belok","angle" : -10})
         if event.char.lower() == "s":
-            if self.mqtt is not None : self.mqtt.speed = 1500
+            if self.mqtt is not None : self.mqtt.speed = 1350
             print("Kapal mundur")
         if event.char.lower() == "w":
             print("Kapal maju")
-            if self.mqtt is not None : self.mqtt.speed = 1650
+            if self.mqtt is not None : self.mqtt.speed = 1700
         if event.char.lower() == "d":
             print("Kapal kekanan")
             if self.mqtt is not None : self.mqtt.mqttc.emit("belok",{"event" : "belok","angle" : 10})
